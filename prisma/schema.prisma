@@ -46,8 +46,29 @@ model LeetCodeSubmission {
   runtime          String?
   memory           String?
   sourceCode       String?  @db.Text
-  
+  failureAnalyses  FailureAnalysis[]
+
   @@unique([accountId, submissionId]) // Prevent duplicate submissions where stable ID exists
   @@index([accountId])
   @@index([problemId])
+}
+
+// Phase 4: "Why Did I Fail?" — stores AI-generated diagnosis of a failed submission.
+model FailureAnalysis {
+  id                 String   @id @default(cuid())
+  clerkUserId        String
+  submissionId       String
+  submission         LeetCodeSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  rootCause          String   @db.Text
+  failureCategory    String
+  concept            String
+  evidence           String   @db.Text
+  preventionRule     String   @db.Text
+  suggestedFollowUp  String   @db.Text
+  failingTestCase    Json?
+  aiModel            String
+  createdAt          DateTime @default(now())
+
+  @@index([clerkUserId])
+  @@index([submissionId])
 }

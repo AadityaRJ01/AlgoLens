@@ -11,6 +11,7 @@ export default async function Navbar() {
         <Link href="/" className="text-xl font-bold tracking-tight text-white">AlgoLens</Link>
         <div className="flex gap-6 text-sm font-medium items-center">
           <Link href="/dashboard" className="hover:text-blue-400 transition-colors">Dashboard</Link>
+          <Link href="/failures" className="hover:text-blue-400 transition-colors">Why Did I Fail?</Link>
           <Link href="/recommendations" className="hover:text-blue-400 transition-colors">Recommendations</Link>
           <Link href="/revision" className="hover:text-blue-400 transition-colors">Revision</Link>
           <Link href="/doubt-solver" className="hover:text-blue-400 transition-colors">Doubt Solver</Link>
