@@ -11,3 +11,43 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model LeetCodeAccount {
+  id           String   @id @default(cuid())
+  clerkUserId  String   @unique
+  username     String
+  lastSyncedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  submissions  LeetCodeSubmission[]
+}
+
+model LeetCodeProblem {
+  id               String   @id @default(cuid())
+  questionNumber   String   @unique
+  title            String
+  titleSlug        String   @unique
+  difficulty       String
+  topicTags        String[] 
+  url              String?
+  submissions      LeetCodeSubmission[]
+}
+
+model LeetCodeSubmission {
+  id               String   @id @default(cuid())
+  accountId        String
+  account          LeetCodeAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  problemId        String
+  problem          LeetCodeProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  submissionId     String?  // Not making this @unique yet as some submissions might lack stable IDs, we'll index it instead.
+  verdict          String
+  language         String
+  timestamp        DateTime
+  runtime          String?
+  memory           String?
+  sourceCode       String?  @db.Text
+  
+  @@unique([accountId, submissionId]) // Prevent duplicate submissions where stable ID exists
+  @@index([accountId])
+  @@index([problemId])
+}
