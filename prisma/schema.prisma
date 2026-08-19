@@ -129,7 +129,62 @@ model MicroProofAttempt {
   feedback          String    @db.Text
   aiModel           String
   createdAt         DateTime  @default(now())
+  // Phase 7: the revision interval that was computed immediately after this
+  // attempt (null for attempts made before Phase 7, or if it wasn't tied to
+  // a concept with a mastery record yet). Denormalized purely so the
+  // Revision History view can show "Review N -> score -> interval" without
+  // having to re-derive a point-in-time value from current data.
+  intervalDaysAfterReview Int?
 
   @@index([clerkUserId])
   @@index([microProofId])
+}
+
+// Phase 6: Concept Mastery — a deterministic, explainable rollup of Phase 4
+// (failure history) and Phase 5 (micro-proof performance, successful
+// problems) signals for one user's understanding of one normalized concept.
+// Recalculated server-side whenever new relevant data appears; never set by hand.
+model ConceptMastery {
+  id                       String   @id @default(cuid())
+  clerkUserId              String
+  concept                  String
+  masteryScore             Int
+  status                   String
+  totalMicroProofAttempts  Int      @default(0)
+  averageMicroProofScore   Float?
+  failureCount             Int      @default(0)
+  successfulProblemCount   Int      @default(0)
+  lastEvaluatedAt          DateTime
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  revisionSchedule         RevisionSchedule?
+
+  @@unique([clerkUserId, concept])
+  @@index([clerkUserId])
+  @@index([masteryScore])
+  @@index([status])
+}
+
+// Phase 7: Adaptive Revision — a deterministic spaced-repetition-style
+// schedule for one user's normalized concept. Created on the concept's
+// first Micro-Proof evaluation and updated on every subsequent review.
+// The (clerkUserId, concept) pair doubles as the FK into ConceptMastery,
+// so a schedule can only exist for a concept with real learning evidence.
+model RevisionSchedule {
+  id                   String   @id @default(cuid())
+  clerkUserId          String
+  concept              String
+  mastery              ConceptMastery @relation(fields: [clerkUserId, concept], references: [clerkUserId, concept], onDelete: Cascade)
+  nextReviewAt         DateTime
+  lastReviewedAt       DateTime
+  reviewCount          Int      @default(0)
+  currentIntervalDays  Int
+  lastScore            Int
+  status               String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([clerkUserId, concept])
+  @@index([clerkUserId])
+  @@index([nextReviewAt])
 }

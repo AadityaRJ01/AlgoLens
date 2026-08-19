@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { fetchProblemDescription } from "@/lib/leetcode";
 import { analyzeFailure, GroqServiceError } from "@/lib/groq";
 import { MAX_PASTE_CHARS } from "@/lib/constants";
+import { recalculateConceptMastery } from "@/lib/mastery";
 
 export async function POST(req) {
   try {
@@ -87,6 +88,14 @@ export async function POST(req) {
         aiModel: result.aiModel,
       },
     });
+
+    // Best-effort: mastery is recalculated from the data we just committed,
+    // but a recalculation hiccup shouldn't fail the analysis response.
+    try {
+      await recalculateConceptMastery(userId, saved.concept);
+    } catch (err) {
+      console.error("[FAILURE_ANALYZE_MASTERY_ERROR]", err.message);
+    }
 
     return NextResponse.json({
       analysis: {

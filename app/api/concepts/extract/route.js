@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { fetchProblemDescription } from "@/lib/leetcode";
 import { extractConceptAndMicroProof, GroqServiceError } from "@/lib/groq";
 import { ACCEPTED_VERDICT, MAX_PASTE_CHARS } from "@/lib/constants";
+import { recalculateConceptMastery } from "@/lib/mastery";
 
 function serializeConcept(concept) {
   return {
@@ -170,6 +171,15 @@ export async function POST(req) {
         }
       }
       throw err;
+    }
+
+    // Best-effort: this is a newly extracted concept for a newly accepted
+    // problem — a mastery-relevant event — but a recalculation hiccup
+    // shouldn't fail the extraction response.
+    try {
+      await recalculateConceptMastery(userId, created.name);
+    } catch (err) {
+      console.error("[CONCEPT_EXTRACT_MASTERY_ERROR]", err.message);
     }
 
     return NextResponse.json({
