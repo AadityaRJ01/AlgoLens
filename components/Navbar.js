@@ -13,6 +13,7 @@ export default async function Navbar() {
           <Link href="/dashboard" className="hover:text-blue-400 transition-colors">Dashboard</Link>
           <Link href="/failures" className="hover:text-blue-400 transition-colors">Why Did I Fail?</Link>
           <Link href="/concepts" className="hover:text-blue-400 transition-colors">Micro-Proofs</Link>
+          <Link href="/mastery" className="hover:text-blue-400 transition-colors">Mastery</Link>
           <Link href="/recommendations" className="hover:text-blue-400 transition-colors">Recommendations</Link>
           <Link href="/revision" className="hover:text-blue-400 transition-colors">Revision</Link>
           <Link href="/doubt-solver" className="hover:text-blue-400 transition-colors">Doubt Solver</Link>
