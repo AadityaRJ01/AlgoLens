@@ -28,9 +28,10 @@ model LeetCodeProblem {
   title            String
   titleSlug        String   @unique
   difficulty       String
-  topicTags        String[] 
+  topicTags        String[]
   url              String?
   submissions      LeetCodeSubmission[]
+  concepts         Concept[]
 }
 
 model LeetCodeSubmission {
@@ -47,6 +48,7 @@ model LeetCodeSubmission {
   memory           String?
   sourceCode       String?  @db.Text
   failureAnalyses  FailureAnalysis[]
+  concepts         Concept[]
 
   @@unique([accountId, submissionId]) // Prevent duplicate submissions where stable ID exists
   @@index([accountId])
@@ -71,4 +73,63 @@ model FailureAnalysis {
 
   @@index([clerkUserId])
   @@index([submissionId])
+}
+
+// Phase 5: Concept Extraction — the core algorithmic concept behind an
+// accepted submission (one per user per problem; re-extracting reuses this row).
+model Concept {
+  id             String   @id @default(cuid())
+  clerkUserId    String
+  problemId      String
+  problem        LeetCodeProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  submissionId   String?
+  submission     LeetCodeSubmission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  name           String
+  coreIdea       String   @db.Text
+  invariant      String   @db.Text
+  aiModel        String
+  createdAt      DateTime @default(now())
+  microProofs    MicroProof[]
+
+  @@unique([clerkUserId, problemId])
+  @@index([clerkUserId])
+  @@index([submissionId])
+}
+
+// Phase 5: Active-Recall Micro-Proof — a short conceptual question generated
+// from a Concept. The question itself is persistent; each time the user
+// answers it, a separate MicroProofAttempt is recorded (never overwritten).
+model MicroProof {
+  id                String    @id @default(cuid())
+  clerkUserId       String
+  conceptId         String
+  concept           Concept   @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  question          String    @db.Text
+  expectedPoints    Json
+  aiModel           String
+  createdAt         DateTime  @default(now())
+  attempts          MicroProofAttempt[]
+
+  @@index([clerkUserId])
+  @@index([conceptId])
+}
+
+// Phase 5: One evaluated attempt at answering a MicroProof. A user may
+// re-attempt the same MicroProof; each attempt is preserved independently.
+model MicroProofAttempt {
+  id                String    @id @default(cuid())
+  microProofId      String
+  microProof        MicroProof @relation(fields: [microProofId], references: [id], onDelete: Cascade)
+  clerkUserId       String
+  answer            String    @db.Text
+  score             Int
+  understanding     String
+  whatWasCorrect    String    @db.Text
+  missingPoints     Json
+  feedback          String    @db.Text
+  aiModel           String
+  createdAt         DateTime  @default(now())
+
+  @@index([clerkUserId])
+  @@index([microProofId])
 }
