@@ -22,6 +22,28 @@ model LeetCodeAccount {
   submissions  LeetCodeSubmission[]
 }
 
+// Phase 8: Global LeetCode Problem Catalog — public, read-only reference data
+// independent of any user's submission history. Populated by
+// lib/leetcodeCatalog.js from LeetCode's public GraphQL API (the same free,
+// unauthenticated source Phase 3 already uses). This is the candidate pool
+// for recommendations; LeetCodeProblem stays the table actually referenced
+// by submissions/concepts/recommendations, and gets a mirrored row
+// on-demand only for catalog problems that get recommended (see
+// ensureLeetCodeProblemFromCatalog in lib/recommendations.js).
+model LeetCodeProblemCatalog {
+  id             String   @id @default(cuid())
+  questionNumber String?
+  title          String
+  slug           String   @unique
+  difficulty     String
+  topicTags      String[]
+  url            String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([difficulty])
+}
+
 model LeetCodeProblem {
   id               String   @id @default(cuid())
   questionNumber   String   @unique
@@ -32,6 +54,7 @@ model LeetCodeProblem {
   url              String?
   submissions      LeetCodeSubmission[]
   concepts         Concept[]
+  recommendations  Recommendation[]
 }
 
 model LeetCodeSubmission {
@@ -187,4 +210,25 @@ model RevisionSchedule {
   @@unique([clerkUserId, concept])
   @@index([clerkUserId])
   @@index([nextReviewAt])
+}
+
+// Phase 8: Personalized Practice — a deterministically selected "solve this
+// next" recommendation for one user. Problem SELECTION is 100% rule-based
+// (see lib/recommendations.js); Groq is only ever used to write the
+// natural-language "reason" explaining a choice that's already been made.
+model Recommendation {
+  id             String    @id @default(cuid())
+  clerkUserId    String
+  problemId      String
+  problem        LeetCodeProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  targetConcept  String
+  reason         String    @db.Text
+  priorityScore  Int
+  aiModel        String?
+  generatedAt    DateTime  @default(now())
+  completedAt    DateTime?
+
+  @@unique([clerkUserId, problemId])
+  @@index([clerkUserId])
+  @@index([completedAt])
 }
