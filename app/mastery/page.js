@@ -2,18 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
-
-const STATUS_STYLES = {
-  STRONG: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  DEVELOPING: "bg-amber-50 text-amber-700 border-amber-200",
-  WEAK: "bg-rose-50 text-rose-700 border-rose-200",
-};
-
-const STATUS_LABELS = {
-  STRONG: "Strong",
-  DEVELOPING: "Developing",
-  WEAK: "Weak",
-};
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
+import { CARD_PADDED, pageClass } from "@/lib/theme";
 
 export default async function MasteryPage() {
   const { userId } = await auth();
@@ -27,9 +18,9 @@ export default async function MasteryPage() {
   });
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
+    <div className={pageClass("max-w-4xl")}>
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Concept Mastery</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Concept Mastery</h1>
         <p className="text-slate-600 mt-1">
           A deterministic score for how well you understand each concept, calculated from
           your Micro-Proof answers, failure history, and solved problems.
@@ -37,31 +28,22 @@ export default async function MasteryPage() {
       </div>
 
       {mastery.length === 0 && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No mastery data yet.{" "}
-          <Link href="/concepts" className="text-blue-600 hover:underline font-medium">
-            Extract a concept and answer a Micro-Proof
-          </Link>{" "}
-          to start building your mastery profile.
-        </div>
+        <EmptyState
+          message="Complete a few Micro-Proofs to build your learning profile."
+          actionHref="/concepts"
+          actionLabel="Extract a concept"
+        />
       )}
 
       {mastery.length > 0 && (
         <ul className="space-y-3">
           {mastery.map((m) => (
-            <li
-              key={m.concept}
-              className="bg-white border border-slate-200 rounded-xl shadow-sm p-5"
-            >
+            <li key={m.concept} className={`${CARD_PADDED} p-5`}>
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <h2 className="font-semibold text-slate-900">{m.concept}</h2>
                 <div className="flex items-center gap-3 shrink-0">
                   <span className="text-2xl font-bold text-slate-900">{m.masteryScore}%</span>
-                  <span
-                    className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${STATUS_STYLES[m.status] || "bg-slate-50 text-slate-600 border-slate-200"}`}
-                  >
-                    {STATUS_LABELS[m.status] || m.status}
-                  </span>
+                  <Badge status={m.status} />
                 </div>
               </div>
 

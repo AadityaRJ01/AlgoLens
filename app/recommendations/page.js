@@ -4,18 +4,8 @@ import prisma from "@/lib/prisma";
 import { getOrGenerateRecommendations, CatalogNotInitializedError } from "@/lib/recommendations";
 import RefreshButton from "./RefreshButton";
 import InitCatalogButton from "./InitCatalogButton";
-
-const DIFFICULTY_STYLES = {
-  Easy: "text-emerald-600",
-  Medium: "text-amber-500",
-  Hard: "text-rose-500",
-};
-
-const PRIORITY_STYLES = {
-  High: "bg-rose-50 text-rose-700 border-rose-200",
-  Medium: "bg-amber-50 text-amber-700 border-amber-200",
-  Low: "bg-slate-50 text-slate-600 border-slate-200",
-};
+import EmptyState from "@/components/ui/EmptyState";
+import { CARD_PADDED, DIFFICULTY_STYLES, PRIORITY_STYLES, BTN_PRIMARY, pageClass } from "@/lib/theme";
 
 export default async function RecommendationsPage() {
   const { userId } = await auth();
@@ -40,25 +30,22 @@ export default async function RecommendationsPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
+    <div className={pageClass("max-w-4xl")}>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">What Should I Solve Next?</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">What Should I Solve Next?</h1>
           <p className="text-slate-600 mt-1">Based on your current learning profile.</p>
         </div>
         {masteryCount > 0 && <RefreshButton />}
       </div>
 
       {masteryCount === 0 && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          Not enough learning data yet. Complete a few Micro-Proofs and solve some problems to
-          unlock personalized recommendations.
-        </div>
+        <EmptyState message="Complete more problems and Micro-Proofs to unlock personalized recommendations." />
       )}
 
       {masteryCount > 0 && catalogNotInitialized && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600 space-y-3">
-          <p>
+        <div className={`${CARD_PADDED} space-y-3`}>
+          <p className="text-slate-600">
             The global LeetCode problem catalog hasn&apos;t been initialized yet, so we have no
             pool of problems to recommend from. Initialize it once and recommendations will
             appear.
@@ -68,17 +55,13 @@ export default async function RecommendationsPage() {
       )}
 
       {masteryCount > 0 && !catalogNotInitialized && recommendations.length === 0 && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No recommendations available right now — we couldn&apos;t find an unsolved problem in
-          our catalog matching your weakest concepts. Sync more LeetCode activity or check back
-          later.
-        </div>
+        <EmptyState message="No recommendations available right now — we couldn't find an unsolved problem in our catalog matching your weakest concepts. Sync more LeetCode activity or check back later." />
       )}
 
       {recommendations.length > 0 && (
         <ol className="space-y-4">
           {recommendations.map((rec, i) => (
-            <li key={rec.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+            <li key={rec.id} className={CARD_PADDED}>
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -122,7 +105,7 @@ export default async function RecommendationsPage() {
                   href={rec.problem.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-4 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors"
+                  className={`inline-block mt-4 ${BTN_PRIMARY}`}
                 >
                   Solve on LeetCode
                 </a>

@@ -1,6 +1,20 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
+// Every authenticated app page is gated here, not just /dashboard — pages
+// that also render a route-level loading.js (Phase 10) stream their shell
+// before their own in-page redirect() can run, which would otherwise turn
+// an unauthenticated visit into a 200 instead of a clean redirect. Each
+// page still keeps its own auth()+redirect() as defense in depth.
+const isProtectedRoute = createRouteMatcher([
+  '/dashboard(.*)',
+  '/mastery(.*)',
+  '/revision(.*)',
+  '/recommendations(.*)',
+  '/failures(.*)',
+  '/concepts(.*)',
+  '/doubt-solver(.*)',
+  '/settings(.*)',
+]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {

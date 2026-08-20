@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import FailureAnalyzer from "./FailureAnalyzer";
+import { pageClass } from "@/lib/theme";
 
 export default async function FailureDetailPage({ params }) {
   const { userId } = await auth();
@@ -60,7 +61,7 @@ export default async function FailureDetailPage({ params }) {
     : null;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
+    <div className={pageClass("max-w-4xl")}>
       <Link href="/failures" className="text-sm text-blue-600 hover:underline">
         &larr; Back to failed submissions
       </Link>
