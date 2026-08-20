@@ -2,36 +2,30 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
+import { CARD_PADDED, BTN_PRIMARY, pageClass } from "@/lib/theme";
 
-const STATUS_META = {
-  STRONG: { emoji: "🟢", style: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  DEVELOPING: { emoji: "🟡", style: "bg-amber-50 text-amber-700 border-amber-200" },
-  WEAK: { emoji: "🔴", style: "bg-rose-50 text-rose-700 border-rose-200" },
-};
+const STATUS_EMOJI = { STRONG: "🟢", DEVELOPING: "🟡", WEAK: "🔴" };
 
 function ScheduleCard({ schedule }) {
-  const meta = STATUS_META[schedule.mastery?.status] || { emoji: "⚪", style: "bg-slate-50 text-slate-600 border-slate-200" };
+  const status = schedule.mastery?.status;
 
   return (
-    <li className="bg-white border border-slate-200 rounded-xl shadow-sm p-5">
+    <li className={`${CARD_PADDED} p-5`}>
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-          <span>{meta.emoji}</span>
+          <span aria-hidden="true">{STATUS_EMOJI[status] || "⚪"}</span>
           {schedule.concept}
         </h3>
-        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${meta.style}`}>
-          Mastery: {schedule.mastery?.masteryScore ?? "—"}%
-        </span>
+        <Badge status={status}>Mastery: {schedule.mastery?.masteryScore ?? "—"}%</Badge>
       </div>
       <div className="mt-2 text-sm text-slate-600 flex flex-wrap gap-x-4 gap-y-1">
         <span>Last score: {schedule.lastScore}/10</span>
         <span>Review count: {schedule.reviewCount}</span>
         <span>Next review: {new Date(schedule.nextReviewAt).toLocaleDateString()}</span>
       </div>
-      <Link
-        href={`/revision/${encodeURIComponent(schedule.concept)}`}
-        className="inline-block mt-3 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors"
-      >
+      <Link href={`/revision/${encodeURIComponent(schedule.concept)}`} className={`inline-block mt-3 ${BTN_PRIMARY}`}>
         Review
       </Link>
     </li>
@@ -55,9 +49,9 @@ export default async function RevisionPage() {
   const upcoming = schedules.filter((s) => s.nextReviewAt > now);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8">
+    <div className={pageClass("max-w-4xl")}>
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Revision Queue</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Revision Queue</h1>
         <p className="text-slate-600 mt-1">
           Weak concepts come back sooner, strong concepts come back later — scheduled
           automatically from your Micro-Proof performance and Concept Mastery.
@@ -65,13 +59,15 @@ export default async function RevisionPage() {
       </div>
 
       {schedules.length === 0 && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No revision schedule yet.{" "}
-          <Link href="/concepts" className="text-blue-600 hover:underline font-medium">
-            Answer a Micro-Proof
-          </Link>{" "}
-          to start one.
-        </div>
+        <EmptyState
+          message="No revision schedule yet. Answer a Micro-Proof to start one."
+          actionHref="/concepts"
+          actionLabel="Answer a Micro-Proof"
+        />
+      )}
+
+      {schedules.length > 0 && due.length === 0 && (
+        <p className="text-sm text-slate-600">You&apos;re all caught up. Nothing is due for revision right now.</p>
       )}
 
       {due.length > 0 && (

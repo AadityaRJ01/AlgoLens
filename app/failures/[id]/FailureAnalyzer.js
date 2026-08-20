@@ -1,12 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const DIFFICULTY_STYLES = {
-  Easy: "text-emerald-600",
-  Medium: "text-amber-500",
-  Hard: "text-rose-500",
-};
+import { DIFFICULTY_STYLES } from "@/lib/theme";
 
 export default function FailureAnalyzer({ submission, initialAnalysis }) {
   const [sourceCode, setSourceCode] = useState(submission.sourceCode || "");

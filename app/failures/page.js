@@ -3,17 +3,13 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { FAILING_VERDICTS } from "@/lib/constants";
+import EmptyState from "@/components/ui/EmptyState";
+import { CARD, DIFFICULTY_STYLES, pageClass } from "@/lib/theme";
 
 const VERDICT_STYLES = {
   "Wrong Answer": "bg-rose-50 text-rose-700 border-rose-200",
   "Time Limit Exceeded": "bg-amber-50 text-amber-700 border-amber-200",
   "Memory Limit Exceeded": "bg-purple-50 text-purple-700 border-purple-200",
-};
-
-const DIFFICULTY_STYLES = {
-  Easy: "text-emerald-600",
-  Medium: "text-amber-500",
-  Hard: "text-rose-500",
 };
 
 export default async function FailuresPage() {
@@ -45,33 +41,28 @@ export default async function FailuresPage() {
     : [];
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-6">
+    <div className={pageClass("max-w-5xl")}>
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Failed Submissions</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Failed Submissions</h1>
         <p className="text-slate-600 mt-1">
           Select a failed submission to find out why it didn&apos;t pass.
         </p>
       </div>
 
       {!account && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No LeetCode account connected yet.{" "}
-          <Link href="/settings" className="text-blue-600 hover:underline font-medium">
-            Connect your LeetCode profile
-          </Link>{" "}
-          to import submissions.
-        </div>
+        <EmptyState
+          message="No LeetCode account connected yet."
+          actionHref="/settings"
+          actionLabel="Connect your LeetCode profile"
+        />
       )}
 
       {account && submissions.length === 0 && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No failed submissions found. Either you haven&apos;t failed anything recently, or you
-          need to{" "}
-          <Link href="/settings" className="text-blue-600 hover:underline font-medium">
-            sync your LeetCode data
-          </Link>{" "}
-          again.
-        </div>
+        <EmptyState
+          message="No failure patterns recorded yet. Either you haven't failed anything recently, or you need to sync your LeetCode data again."
+          actionHref="/settings"
+          actionLabel="Sync LeetCode data"
+        />
       )}
 
       {submissions.length > 0 && (
@@ -80,7 +71,7 @@ export default async function FailuresPage() {
             <li key={sub.id}>
               <Link
                 href={`/failures/${sub.id}`}
-                className="block bg-white border border-slate-200 rounded-xl shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all"
+                className={`block ${CARD} p-5 hover:border-blue-300 hover:shadow-md transition-all`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">

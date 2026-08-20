@@ -4,6 +4,7 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { ACCEPTED_VERDICT } from "@/lib/constants";
 import ConceptWorkspace from "./ConceptWorkspace";
+import { pageClass } from "@/lib/theme";
 
 export default async function ConceptDetailPage({ params }) {
   const { userId } = await auth();
@@ -81,7 +82,7 @@ export default async function ConceptDetailPage({ params }) {
     : null;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
+    <div className={pageClass("max-w-4xl")}>
       <Link href="/concepts" className="text-sm text-blue-600 hover:underline">
         &larr; Back to Micro-Proofs
       </Link>

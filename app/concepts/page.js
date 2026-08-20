@@ -3,12 +3,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { ACCEPTED_VERDICT } from "@/lib/constants";
-
-const DIFFICULTY_STYLES = {
-  Easy: "text-emerald-600",
-  Medium: "text-amber-500",
-  Hard: "text-rose-500",
-};
+import EmptyState from "@/components/ui/EmptyState";
+import { CARD, DIFFICULTY_STYLES, pageClass } from "@/lib/theme";
 
 export default async function ConceptsPage() {
   const { userId } = await auth();
@@ -49,9 +45,9 @@ export default async function ConceptsPage() {
   const extractedProblemIds = new Set(concepts.map((c) => c.problemId));
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-6">
+    <div className={pageClass("max-w-5xl")}>
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Micro-Proofs</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Micro-Proofs</h1>
         <p className="text-slate-600 mt-1">
           Pick a problem you&apos;ve solved to extract its core concept and test your
           understanding with a short active-recall question.
@@ -59,23 +55,19 @@ export default async function ConceptsPage() {
       </div>
 
       {!account && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No LeetCode account connected yet.{" "}
-          <Link href="/settings" className="text-blue-600 hover:underline font-medium">
-            Connect your LeetCode profile
-          </Link>{" "}
-          to import submissions.
-        </div>
+        <EmptyState
+          message="No LeetCode account connected yet."
+          actionHref="/settings"
+          actionLabel="Connect your LeetCode profile"
+        />
       )}
 
       {account && problems.length === 0 && (
-        <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm text-slate-600">
-          No accepted submissions found yet.{" "}
-          <Link href="/settings" className="text-blue-600 hover:underline font-medium">
-            Sync your LeetCode data
-          </Link>{" "}
-          again, or solve a problem first.
-        </div>
+        <EmptyState
+          message="No accepted submissions found yet. Sync your LeetCode data again, or solve a problem first."
+          actionHref="/settings"
+          actionLabel="Sync LeetCode data"
+        />
       )}
 
       {problems.length > 0 && (
@@ -84,7 +76,7 @@ export default async function ConceptsPage() {
             <li key={sub.id}>
               <Link
                 href={`/concepts/${sub.id}`}
-                className="block bg-white border border-slate-200 rounded-xl shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all"
+                className={`block ${CARD} p-5 hover:border-blue-300 hover:shadow-md transition-all`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">

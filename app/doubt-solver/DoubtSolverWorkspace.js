@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DIFFICULTY_STYLES } from "@/lib/theme";
 
 const LANGUAGES = [
   "Java",
@@ -14,12 +15,6 @@ const LANGUAGES = [
   "Kotlin",
   "Other",
 ];
-
-const DIFFICULTY_STYLES = {
-  Easy: "text-emerald-600",
-  Medium: "text-amber-500",
-  Hard: "text-rose-500",
-};
 
 const HINT_META = {
   1: { label: "HINT 1 — CONCEPT", nextLabel: "Get Hint 2", badge: "bg-blue-50 text-blue-700 border-blue-200" },

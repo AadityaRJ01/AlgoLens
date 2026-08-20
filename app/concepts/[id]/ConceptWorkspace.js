@@ -1,12 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const DIFFICULTY_STYLES = {
-  Easy: "text-emerald-600",
-  Medium: "text-amber-500",
-  Hard: "text-rose-500",
-};
+import { DIFFICULTY_STYLES } from "@/lib/theme";
 
 const UNDERSTANDING_STYLES = {
   strong: "bg-emerald-50 text-emerald-700 border-emerald-200",
