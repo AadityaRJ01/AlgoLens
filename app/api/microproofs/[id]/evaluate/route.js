@@ -6,12 +6,21 @@ import { MAX_ANSWER_CHARS } from "@/lib/constants";
 import { recalculateConceptMastery } from "@/lib/mastery";
 import { normalizeConceptName } from "@/lib/conceptNormalization";
 import { scheduleOrUpdateRevision, buildReviewExplanation } from "@/lib/revision";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 export async function POST(req, { params }) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("microproofs_evaluate", userId, RATE_LIMITS.GROQ_STANDARD);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const { id } = await params;

@@ -2,12 +2,21 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { fetchUserProfile, fetchRecentSubmissions, fetchProblemMetadata } from "@/lib/leetcode";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 export async function POST(req) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("leetcode_sync", userId, RATE_LIMITS.LEETCODE_SYNC);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const body = await req.json();

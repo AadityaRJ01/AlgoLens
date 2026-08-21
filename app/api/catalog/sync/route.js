@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { syncLeetCodeProblemCatalog } from "@/lib/leetcodeCatalog";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 // Phase 8: imports/refreshes the global LeetCode problem catalog — public,
 // read-only reference data shared by every user. Requires auth only to
@@ -12,6 +13,14 @@ export async function POST() {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("catalog_sync", userId, RATE_LIMITS.CATALOG_SYNC);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const result = await syncLeetCodeProblemCatalog();
