@@ -1,212 +1,275 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { normalizeConceptName } from "@/lib/conceptNormalization";
-import { FAILING_VERDICTS } from "@/lib/constants";
-import { DARK_CARD, DARK_CARD_PADDED, DARK_BTN_PRIMARY, DARK_BTN_SECONDARY, DARK_DIFFICULTY_STYLES, pageClass } from "@/lib/theme";
+import { fetchProblemDescription } from "@/lib/leetcode";
+import { FAILING_VERDICTS, ACCEPTED_VERDICT } from "@/lib/constants";
+import { priorityLabelFor } from "@/lib/recommendations";
+import { buildConceptTrends } from "@/lib/dashboard";
+import { pageClass } from "@/lib/theme";
 import EmptyState from "@/components/ui/EmptyState";
+import AnalyzeWorkspace from "@/components/analyze/AnalyzeWorkspace";
 
-// The dashboard-family "Analyze" surface. This is a foundation over real
-// data, not a rebuild of the AI analysis engine: the actual "why did I
-// fail?" analysis already lives at /failures/[id] (FailureAnalyzer.js,
-// /api/failures/analyze). This page reads the most recently generated
-// FailureAnalysis (real stored data — rootCause/concept/evidence/
-// preventionRule/suggestedFollowUp, all AI-authored by Phase 4, never
-// fabricated here) and presents it in the three-pane
-// problem/code/analysis layout, with a hand-off into /failures to analyze
-// a different (or new) submission.
-export default async function AnalyzePage() {
+// The core AlgoLens experience: Code -> Failure -> Root Cause -> Concept ->
+// Mastery -> Micro-Proof -> Recommendation, in one workspace. This page does
+// all the real data fetching (server-only) and hands fully-resolved,
+// serializable props to the client workspace; the client side only owns the
+// editable source code, the analyze request, and post-analysis mastery
+// refresh (see AnalyzeWorkspace.js). No AI/analysis logic is duplicated —
+// the real POST /api/failures/analyze (Phase 4) is reused as-is.
+export default async function AnalyzePage({ searchParams }) {
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
   }
 
+  const params = await searchParams;
+
   const account = await prisma.leetCodeAccount.findUnique({ where: { clerkUserId: userId } });
 
-  const [latestAnalysis, recentFailures] = await Promise.all([
-    prisma.failureAnalysis.findFirst({
-      where: { clerkUserId: userId },
-      orderBy: { createdAt: "desc" },
-      include: { submission: { include: { problem: true } } },
+  if (!account) {
+    return (
+      <Shell>
+        <EmptyState
+          tone="dark"
+          message="Connect your LeetCode account to start analyzing submissions."
+          actionHref="/settings"
+          actionLabel="Connect LeetCode"
+        />
+      </Shell>
+    );
+  }
+
+  const recentSubmissions = await prisma.leetCodeSubmission.findMany({
+    where: { accountId: account.id },
+    include: { problem: { select: { title: true, difficulty: true } } },
+    orderBy: { timestamp: "desc" },
+    take: 8,
+  });
+
+  if (recentSubmissions.length === 0) {
+    return (
+      <Shell>
+        <EmptyState
+          tone="dark"
+          message="No submissions found yet. Sync your LeetCode data to get started."
+          actionHref="/settings"
+          actionLabel="Sync LeetCode data"
+        />
+      </Shell>
+    );
+  }
+
+  const requestedId = typeof params?.submission === "string" ? params.submission : null;
+  const defaultSubmission =
+    recentSubmissions.find((s) => s.id === requestedId) ||
+    recentSubmissions.find((s) => FAILING_VERDICTS.includes(s.verdict)) ||
+    recentSubmissions[0];
+
+  const submission = await prisma.leetCodeSubmission.findUnique({
+    where: { id: defaultSubmission.id },
+    include: {
+      problem: true,
+      account: true,
+      failureAnalyses: { orderBy: { createdAt: "desc" }, take: 1 },
+    },
+  });
+
+  if (!submission || submission.account.clerkUserId !== userId) {
+    return (
+      <Shell>
+        <EmptyState tone="dark" message="That submission couldn't be found." actionHref="/analyze" actionLabel="Back to Analyze" />
+      </Shell>
+    );
+  }
+
+  const canAnalyze = FAILING_VERDICTS.includes(submission.verdict);
+  const isAccepted = submission.verdict === ACCEPTED_VERDICT;
+
+  const [problemDescription, microProofSource, acceptedForProblem, allMasteries, microProofAttempts] = await Promise.all([
+    fetchProblemDescription(submission.problem.titleSlug).catch(() => null),
+    prisma.concept.findUnique({
+      where: { clerkUserId_problemId: { clerkUserId: userId, problemId: submission.problemId } },
+      include: {
+        microProofs: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          include: { attempts: { where: { clerkUserId: userId }, orderBy: { createdAt: "desc" } } },
+        },
+      },
     }),
-    account
-      ? prisma.leetCodeSubmission.findMany({
-          where: { accountId: account.id, verdict: { in: FAILING_VERDICTS } },
-          include: { problem: true },
-          orderBy: { timestamp: "desc" },
-          take: 5,
-        })
-      : Promise.resolve([]),
+    prisma.leetCodeSubmission.findFirst({
+      where: { problemId: submission.problemId, verdict: ACCEPTED_VERDICT, account: { clerkUserId: userId } },
+      select: { id: true },
+      orderBy: { timestamp: "desc" },
+    }),
+    prisma.conceptMastery.findMany({ where: { clerkUserId: userId } }),
+    prisma.microProofAttempt.findMany({
+      where: { clerkUserId: userId },
+      select: {
+        score: true,
+        createdAt: true,
+        microProof: { select: { concept: { select: { name: true } } } },
+      },
+      orderBy: { createdAt: "asc" },
+    }),
   ]);
 
-  let masteryScore = null;
-  if (latestAnalysis) {
-    const concept = normalizeConceptName(latestAnalysis.concept) || latestAnalysis.concept;
-    const mastery = await prisma.conceptMastery.findUnique({
-      where: { clerkUserId_concept: { clerkUserId: userId, concept } },
-      select: { masteryScore: true },
-    });
-    masteryScore = mastery?.masteryScore ?? null;
-  }
+  const initialAnalysis = submission.failureAnalyses[0]
+    ? {
+        rootCause: submission.failureAnalyses[0].rootCause,
+        failureCategory: submission.failureAnalyses[0].failureCategory,
+        concept: submission.failureAnalyses[0].concept,
+        evidence: submission.failureAnalyses[0].evidence,
+        preventionRule: submission.failureAnalyses[0].preventionRule,
+        suggestedFollowUp: submission.failureAnalyses[0].suggestedFollowUp,
+        failingTestCase: submission.failureAnalyses[0].failingTestCase,
+        aiModel: submission.failureAnalyses[0].aiModel,
+        createdAt: submission.failureAnalyses[0].createdAt.toISOString(),
+      }
+    : null;
+
+  const masteryByConcept = new Map(allMasteries.map((m) => [m.concept, m.masteryScore]));
+  const trends = buildConceptTrends(microProofAttempts);
+
+  const relevantConcept = isAccepted ? microProofSource?.name || null : initialAnalysis?.concept || null;
+  const normalizedRelevantConcept = relevantConcept ? normalizeConceptName(relevantConcept) || relevantConcept : null;
+  const mastery = normalizedRelevantConcept
+    ? {
+        concept: normalizedRelevantConcept,
+        score: masteryByConcept.get(normalizedRelevantConcept) ?? null,
+        trend: trends.get(normalizedRelevantConcept) || null,
+      }
+    : null;
+
+  const microProof =
+    microProofSource?.microProofs?.[0] && acceptedForProblem
+      ? {
+          id: microProofSource.microProofs[0].id,
+          question: microProofSource.microProofs[0].question,
+          conceptSubmissionId: acceptedForProblem.id,
+          attempts: microProofSource.microProofs[0].attempts.map((a) => ({
+            id: a.id,
+            score: a.score,
+            understanding: a.understanding,
+            feedback: a.feedback,
+            createdAt: a.createdAt.toISOString(),
+          })),
+        }
+      : null;
+
+  const recommendationRows = await prisma.recommendation.findMany({
+    where: { clerkUserId: userId, completedAt: null },
+    include: { problem: true },
+    orderBy: { priorityScore: "desc" },
+    take: 10,
+  });
+  const recommendationRow =
+    recommendationRows.find((r) => r.targetConcept === normalizedRelevantConcept) || recommendationRows[0] || null;
+  const recommendation = recommendationRow
+    ? {
+        title: recommendationRow.problem.title,
+        difficulty: recommendationRow.problem.difficulty,
+        url: recommendationRow.problem.url,
+        targetConcept: recommendationRow.targetConcept,
+        reason: recommendationRow.reason,
+        priorityLabel: priorityLabelFor(recommendationRow.priorityScore),
+      }
+    : null;
+
+  const successConcept =
+    isAccepted && microProofSource
+      ? { name: microProofSource.name, coreIdea: microProofSource.coreIdea }
+      : null;
 
   return (
     <div className="min-h-screen bg-[#05060a] text-neutral-50">
-      <div className={pageClass("max-w-6xl")}>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Analyze</h1>
-            <p className="mt-1 text-sm text-neutral-400">
-              Why did your last submission fail — and what should you understand instead?
-            </p>
-          </div>
-          <Link href="/failures" className={DARK_BTN_SECONDARY}>
-            Analyze another submission
-          </Link>
+      <div className={pageClass("max-w-[100rem]")}>
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Analyze</h1>
+          <p className="mt-1 text-sm text-neutral-400">
+            Understand your solution, identify your mistakes, and learn what to practice next.
+          </p>
+          <FlowStrip />
         </div>
 
-        {!account && (
-          <EmptyState
-            tone="dark"
-            message="Connect your LeetCode account to start analyzing failed submissions."
-            actionHref="/settings"
-            actionLabel="Connect LeetCode"
-          />
-        )}
-
-        {account && !latestAnalysis && (
-          <EmptyState
-            tone="dark"
-            message="No failure analysis yet. Pick a failed submission and AlgoLens will diagnose it."
-            actionHref="/failures"
-            actionLabel="Choose a submission to analyze"
-          />
-        )}
-
-        {latestAnalysis && (
-          <div className="grid gap-5 lg:grid-cols-[1fr_1.2fr_1fr] lg:items-start">
-            {/* left: problem info */}
-            <div className={DARK_CARD_PADDED}>
-              <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Problem</p>
-              <div className="mt-2 flex items-center gap-2 flex-wrap">
-                <h2 className="text-lg font-semibold text-neutral-50">
-                  {latestAnalysis.submission.problem.title}
-                </h2>
-                <span className={`text-sm font-semibold ${DARK_DIFFICULTY_STYLES[latestAnalysis.submission.problem.difficulty] || "text-neutral-400"}`}>
-                  {latestAnalysis.submission.problem.difficulty}
-                </span>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {latestAnalysis.submission.problem.topicTags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-neutral-400">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <dl className="mt-4 space-y-1.5 text-xs text-neutral-500">
-                <div className="flex justify-between">
-                  <dt>Verdict</dt>
-                  <dd className="text-rose-300 font-medium">{latestAnalysis.submission.verdict}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt>Language</dt>
-                  <dd className="text-neutral-300">{latestAnalysis.submission.language}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt>Analyzed</dt>
-                  <dd className="text-neutral-300">{new Date(latestAnalysis.createdAt).toLocaleDateString()}</dd>
-                </div>
-              </dl>
-              <Link href={`/failures/${latestAnalysis.submission.id}`} className={`mt-4 block text-center ${DARK_BTN_SECONDARY}`}>
-                Open full submission
-              </Link>
-            </div>
-
-            {/* center: code */}
-            <div className={DARK_CARD}>
-              <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-3">
-                <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-                <span className="ml-2 text-xs text-neutral-500">Submitted code</span>
-              </div>
-              <pre className="max-h-[28rem] overflow-auto p-4 text-xs leading-relaxed text-neutral-300">
-                <code>{latestAnalysis.submission.sourceCode || "No source code was stored for this submission."}</code>
-              </pre>
-            </div>
-
-            {/* right: AI analysis */}
-            <div className={DARK_CARD_PADDED}>
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-400/20 bg-rose-500/10 px-2.5 py-0.5 text-xs font-semibold text-rose-300">
-                  ✕ Incorrect
-                </span>
-              </div>
-              <h2 className="mt-3 text-base font-semibold text-neutral-50">AI Analysis</h2>
-
-              <AnalysisField label="Root Cause" value={latestAnalysis.rootCause} tone="rose" />
-              <AnalysisField label="Concept" value={latestAnalysis.concept} />
-              <AnalysisField label="Your Mistake" value={latestAnalysis.evidence} />
-              <AnalysisField label="What You Should Understand" value={latestAnalysis.preventionRule} />
-
-              <div className="mt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Concept Mastery</p>
-                {masteryScore !== null ? (
-                  <>
-                    <div className="mt-1.5 flex items-center justify-between text-sm">
-                      <span className="text-neutral-300">{latestAnalysis.concept}</span>
-                      <span className="font-semibold text-neutral-100">{masteryScore}%</span>
-                    </div>
-                    <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
-                        style={{ width: `${masteryScore}%` }}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <p className="mt-1 text-sm text-neutral-500">Not enough evidence yet.</p>
-                )}
-              </div>
-
-              <AnalysisField label="Recommended Next" value={latestAnalysis.suggestedFollowUp} />
-            </div>
-          </div>
-        )}
-
-        {recentFailures.length > 1 && (
-          <section className={DARK_CARD_PADDED}>
-            <h2 className="text-sm font-semibold text-neutral-300">Other recent failed submissions</h2>
-            <ul className="mt-3 space-y-2">
-              {recentFailures
-                .filter((s) => s.id !== latestAnalysis?.submission.id)
-                .slice(0, 4)
-                .map((s) => (
-                  <li key={s.id}>
-                    <Link
-                      href={`/failures/${s.id}`}
-                      className="flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm text-neutral-300 transition-colors hover:bg-white/5"
-                    >
-                      <span className="truncate">{s.problem.title}</span>
-                      <span className="shrink-0 text-xs text-neutral-500">{s.verdict}</span>
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </section>
-        )}
+        <AnalyzeWorkspace
+          submission={{
+            id: submission.id,
+            verdict: submission.verdict,
+            language: submission.language,
+            runtime: submission.runtime,
+            memory: submission.memory,
+            timestamp: submission.timestamp.toISOString(),
+            sourceCode: submission.sourceCode || "",
+            problem: {
+              title: submission.problem.title,
+              difficulty: submission.problem.difficulty,
+              topicTags: submission.problem.topicTags,
+              url: submission.problem.url,
+            },
+          }}
+          problemDescription={problemDescription}
+          canAnalyze={canAnalyze}
+          isAccepted={isAccepted}
+          initialAnalysis={initialAnalysis}
+          mastery={mastery}
+          microProof={microProof}
+          recommendation={recommendation}
+          successConcept={successConcept}
+          recentSubmissions={recentSubmissions.map((s) => ({
+            id: s.id,
+            title: s.problem.title,
+            difficulty: s.problem.difficulty,
+            verdict: s.verdict,
+            isSelected: s.id === submission.id,
+          }))}
+        />
       </div>
     </div>
   );
 }
 
-function AnalysisField({ label, value, tone }) {
+// The learning-flow strip under the header — each stage gets its own
+// subtle, muted tint (rather than one flat gray line) so the pipeline reads
+// as a sequence of distinct steps at a glance. Purely decorative text; see
+// AGENTS.md's dedicated color-hierarchy pass for the exact stage->color map.
+const FLOW_STAGES = [
+  { label: "Code", tone: "text-blue-400/80" },
+  { label: "Failure", tone: "text-rose-400/80" },
+  { label: "Root Cause", tone: "text-amber-400/80" },
+  { label: "Concept", tone: "text-purple-400/80" },
+  { label: "Mastery", tone: "text-blue-400/80" },
+  { label: "Micro-Proof", tone: "text-cyan-400/80" },
+  { label: "Recommendation", tone: "text-emerald-400/80" },
+];
+
+function FlowStrip() {
   return (
-    <div className={`mt-4 rounded-lg border px-3 py-2.5 ${tone === "rose" ? "border-rose-400/20 bg-rose-500/[0.07]" : "border-white/10 bg-white/[0.03]"}`}>
-      <p className={`text-xs font-medium uppercase tracking-wide ${tone === "rose" ? "text-rose-300" : "text-neutral-500"}`}>
-        {label}
-      </p>
-      <p className="mt-1 text-sm text-neutral-200 whitespace-pre-wrap">{value}</p>
+    <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs">
+      {FLOW_STAGES.map((stage, i) => (
+        <span key={stage.label} className="flex items-center gap-1.5">
+          <span className={stage.tone}>{stage.label}</span>
+          {i < FLOW_STAGES.length - 1 && <span className="text-neutral-700">→</span>}
+        </span>
+      ))}
+    </p>
+  );
+}
+
+function Shell({ children }) {
+  return (
+    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+      <div className={pageClass("max-w-3xl")}>
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Analyze</h1>
+          <p className="mt-1 text-sm text-neutral-400">
+            Understand your solution, identify your mistakes, and learn what to practice next.
+          </p>
+          <FlowStrip />
+        </div>
+        {children}
+      </div>
     </div>
   );
 }

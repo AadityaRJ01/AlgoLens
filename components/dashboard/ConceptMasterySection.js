@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { DARK_CARD_PADDED } from "@/lib/theme";
-import useInView from "@/components/landing/useInView";
+import useInView from "@/components/useInView";
 import EmptyState from "@/components/ui/EmptyState";
 
 const BAR_TONE = {

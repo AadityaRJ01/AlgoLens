@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -106,10 +106,14 @@ export default function SidebarNav({ profileSlot }) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Close the mobile sheet on route change.
-  useEffect(() => {
+  // Close the mobile sheet on route change. Adjusting state during render
+  // (rather than in an effect) per https://react.dev/learn/you-might-not-need-an-effect
+  // avoids an extra post-commit render pass.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setIsMobileOpen(false);
-  }, [pathname]);
+  }
 
   return (
     <>

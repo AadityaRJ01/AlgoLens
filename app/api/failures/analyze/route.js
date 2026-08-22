@@ -14,7 +14,7 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { submissionId, sourceCode } = body;
+    const { submissionId, sourceCode, language } = body;
 
     if (!submissionId || typeof submissionId !== "string") {
       return NextResponse.json({ error: "submissionId is required" }, { status: 400 });
@@ -58,7 +58,12 @@ export async function POST(req) {
         tags: submission.problem.topicTags,
         difficulty: submission.problem.difficulty,
         verdict: submission.verdict,
-        language: submission.language,
+        // Optional override from the Analyze workspace's language selector
+        // (the user may edit/paste code in a different language than the
+        // one LeetCode originally recorded) — falls back to the original
+        // submission's language exactly as before when omitted, so every
+        // existing caller (FailureAnalyzer.js) is unaffected.
+        language: typeof language === "string" && language.trim() ? language.trim() : submission.language,
         runtime: submission.runtime,
         memory: submission.memory,
         sourceCode: trimmedCode,
