@@ -3,6 +3,8 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { normalizeConceptName } from "@/lib/conceptNormalization";
+import { priorityLabelFor } from "@/lib/recommendations";
+import { pageClass } from "@/lib/theme";
 import RevisionWorkspace from "./RevisionWorkspace";
 
 export default async function RevisionConceptPage({ params }) {
@@ -46,6 +48,9 @@ export default async function RevisionConceptPage({ params }) {
   // The most recently extracted matching Concept's Micro-Proof is what the
   // user answers again — we never generate a new question for a revision.
   const microProof = matching[0].microProofs[0];
+  // Real "quick concept review" text — the most recent extracted
+  // Concept.coreIdea for this concept (same field /concepts already shows).
+  const coreIdea = matching[0].coreIdea;
 
   // Full history spans every attempt across every matching Concept's
   // Micro-Proof (chronological), so the count lines up with reviewCount.
@@ -59,19 +64,43 @@ export default async function RevisionConceptPage({ params }) {
       createdAt: a.createdAt.toISOString(),
     }));
 
-  return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
-      <Link href="/revision" className="text-sm text-blue-600 hover:underline">
-        &larr; Back to Revision Queue
-      </Link>
+  // Real "Now Apply It" recommendation — prefers one targeting this
+  // concept, same pattern already used on /analyze and /mastery.
+  const recommendationRows = await prisma.recommendation.findMany({
+    where: { clerkUserId: userId, completedAt: null },
+    include: { problem: true },
+    orderBy: { priorityScore: "desc" },
+    take: 10,
+  });
+  const recommendationRow = recommendationRows.find((r) => r.targetConcept === concept) || recommendationRows[0] || null;
+  const recommendation = recommendationRow
+    ? {
+        title: recommendationRow.problem.title,
+        difficulty: recommendationRow.problem.difficulty,
+        url: recommendationRow.problem.url,
+        targetConcept: recommendationRow.targetConcept,
+        reason: recommendationRow.reason,
+        priorityLabel: priorityLabelFor(recommendationRow.priorityScore),
+      }
+    : null;
 
-      <RevisionWorkspace
-        concept={concept}
-        mastery={{ masteryScore: schedule.mastery.masteryScore, status: schedule.mastery.status }}
-        microProofId={microProof.id}
-        question={microProof.question}
-        history={history}
-      />
+  return (
+    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+      <div className={pageClass("max-w-3xl")}>
+        <Link href="/revision" className="text-sm text-neutral-500 hover:text-neutral-300">
+          ← Back to Revision
+        </Link>
+
+        <RevisionWorkspace
+          concept={concept}
+          mastery={{ masteryScore: schedule.mastery.masteryScore, status: schedule.mastery.status }}
+          coreIdea={coreIdea}
+          microProofId={microProof.id}
+          question={microProof.question}
+          history={history}
+          recommendation={recommendation}
+        />
+      </div>
     </div>
   );
 }

@@ -1,98 +1,57 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import prisma from "@/lib/prisma";
-import Badge from "@/components/ui/Badge";
+import { getRevisionOverview } from "@/lib/revisionInsights";
+import { pageClass } from "@/lib/theme";
 import EmptyState from "@/components/ui/EmptyState";
-import { DARK_CARD_PADDED, DARK_BTN_PRIMARY, pageClass } from "@/lib/theme";
+import RevisionPriorityCard from "@/components/revision/RevisionPriorityCard";
+import RevisionQueue from "@/components/revision/RevisionQueue";
+import RevisionHistory from "@/components/revision/RevisionHistory";
 
-const STATUS_EMOJI = { STRONG: "🟢", DEVELOPING: "🟡", WEAK: "🔴" };
+const TOP_PRIORITY_COUNT = 2;
 
-function ScheduleCard({ schedule }) {
-  const status = schedule.mastery?.status;
-
-  return (
-    <li className={`${DARK_CARD_PADDED} p-5`}>
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h3 className="font-semibold text-neutral-50 flex items-center gap-2">
-          <span aria-hidden="true">{STATUS_EMOJI[status] || "⚪"}</span>
-          {schedule.concept}
-        </h3>
-        <Badge status={status} tone="dark">Mastery: {schedule.mastery?.masteryScore ?? "—"}%</Badge>
-      </div>
-      <div className="mt-2 text-sm text-neutral-400 flex flex-wrap gap-x-4 gap-y-1">
-        <span>Last score: {schedule.lastScore}/10</span>
-        <span>Review count: {schedule.reviewCount}</span>
-        <span>Next review: {new Date(schedule.nextReviewAt).toLocaleDateString()}</span>
-      </div>
-      <Link href={`/revision/${encodeURIComponent(schedule.concept)}`} className={`inline-block mt-3 ${DARK_BTN_PRIMARY}`}>
-        Review
-      </Link>
-    </li>
-  );
-}
-
+// "What do I need to revise right now?" — priority items are the real,
+// deterministic urgency ranking from rankConceptsByUrgency
+// (lib/recommendations.js), never a plain "previously solved problems"
+// list. See lib/revisionInsights.js for how this page's data is built.
 export default async function RevisionPage() {
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
   }
 
-  const schedules = await prisma.revisionSchedule.findMany({
-    where: { clerkUserId: userId },
-    include: { mastery: true },
-    orderBy: { nextReviewAt: "asc" },
-  });
-
-  const now = new Date();
-  const due = schedules.filter((s) => s.nextReviewAt <= now);
-  const upcoming = schedules.filter((s) => s.nextReviewAt > now);
+  const { priorityItems, history } = await getRevisionOverview(userId);
 
   return (
     <div className="min-h-screen bg-[#05060a] text-neutral-50">
       <div className={pageClass("max-w-4xl")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Revision Queue</h1>
-          <p className="mt-1 text-sm text-neutral-400">
-            Weak concepts come back sooner, strong concepts come back later — scheduled
-            automatically from your Micro-Proof performance and Concept Mastery.
-          </p>
+          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Revision</h1>
+          <p className="mt-1 text-sm text-neutral-400">Revisit the concepts you&apos;re most likely to forget.</p>
         </div>
 
-        {schedules.length === 0 && (
+        {priorityItems.length === 0 ? (
           <EmptyState
             tone="dark"
-            message="No revision schedule yet. Answer a Micro-Proof to start one."
+            message="You're all caught up — nothing urgently needs revision right now. Answer a Micro-Proof to build your learning profile."
             actionHref="/concepts"
             actionLabel="Answer a Micro-Proof"
           />
+        ) : (
+          <>
+            <section className="space-y-3">
+              <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">Needs Revision</h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {priorityItems.slice(0, TOP_PRIORITY_COUNT).map((item) => (
+                  <RevisionPriorityCard key={item.concept} item={item} />
+                ))}
+              </div>
+            </section>
+
+            <RevisionQueue items={priorityItems} />
+          </>
         )}
 
-        {schedules.length > 0 && due.length === 0 && (
-          <p className="text-sm text-neutral-400">You&apos;re all caught up. Nothing is due for revision right now.</p>
-        )}
-
-        {due.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">Due Now</h2>
-            <ul className="space-y-3">
-              {due.map((s) => (
-                <ScheduleCard key={s.id} schedule={s} />
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {upcoming.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">Upcoming</h2>
-            <ul className="space-y-3">
-              {upcoming.map((s) => (
-                <ScheduleCard key={s.id} schedule={s} />
-              ))}
-            </ul>
-          </section>
-        )}
+        <RevisionHistory history={history} />
       </div>
     </div>
   );
