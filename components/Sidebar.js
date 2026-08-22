@@ -15,15 +15,15 @@ export default async function Sidebar() {
     <div className="flex items-center gap-3">
       <UserButton afterSignOutUrl="/" />
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-neutral-200">
+        <p className="truncate text-sm font-medium text-slate-200">
           {user?.firstName || "Your account"}
         </p>
-        <p className="truncate text-xs text-neutral-500">Profile</p>
+        <p className="truncate text-xs text-slate-500">Profile</p>
       </div>
     </div>
   ) : (
     <div className="flex flex-col gap-2">
-      <Link href="/sign-in" className="text-sm font-medium text-neutral-300 transition-colors hover:text-neutral-100">
+      <Link href="/sign-in" className="text-sm font-medium text-slate-300 transition-colors hover:text-slate-100">
         Sign In
       </Link>
       <Link

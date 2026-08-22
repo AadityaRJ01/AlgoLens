@@ -10,14 +10,10 @@ export default async function DoubtSolverPage() {
   }
 
   return (
-    <div className={pageClass("max-w-4xl")}>
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">AI Doubt Solver</h1>
-        <p className="text-slate-600 mt-1">
-          Stuck on a problem? Get progressively stronger hints — you stay responsible for solving it.
-        </p>
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
+      <div className={pageClass("max-w-7xl")}>
+        <DoubtSolverWorkspace />
       </div>
-      <DoubtSolverWorkspace />
     </div>
   );
 }

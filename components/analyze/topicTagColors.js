@@ -8,7 +8,7 @@ const CATEGORY_TONES = {
   purple: "border-purple-400/15 bg-purple-500/10 text-purple-300",
   amber: "border-amber-400/15 bg-amber-500/10 text-amber-300",
   cyan: "border-cyan-400/15 bg-cyan-500/10 text-cyan-300",
-  neutral: "border-white/10 bg-white/5 text-neutral-400",
+  neutral: "border-slate-800 bg-white/5 text-slate-400",
 };
 
 const TAG_TONE = {

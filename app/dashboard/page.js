@@ -65,7 +65,7 @@ export default async function DashboardPage() {
   const currentStage = deriveCurrentStage(data);
 
   return (
-    <div className={`min-h-screen bg-[#05060a] text-neutral-50`}>
+    <div className={`min-h-screen bg-[#0B0F17] text-slate-50`}>
       <div className={pageClass()}>
         <PageHeader
           greeting={getGreeting()}

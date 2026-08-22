@@ -5,8 +5,8 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-xs shadow-xl">
-      <p className="font-medium text-neutral-200">{label}</p>
+    <div className="rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-xs shadow-xl">
+      <p className="font-medium text-slate-200">{label}</p>
       <p className="text-indigo-300">{payload[0].value}%</p>
     </div>
   );
@@ -21,7 +21,7 @@ export default function MasteryChart({ data }) {
     <div>
       <p className="text-xs font-semibold uppercase tracking-wide text-blue-400/90">Mastery Progress</p>
       {!data ? (
-        <p className="mt-1.5 text-sm text-neutral-500">Not enough history yet to chart a trend.</p>
+        <p className="mt-1.5 text-sm text-slate-500">Not enough history yet to chart a trend.</p>
       ) : (
         <div className="mt-2 h-32 w-full">
           <ResponsiveContainer width="100%" height="100%">

@@ -11,12 +11,12 @@ import { CheckIcon } from "@/components/icons";
 // the result state uses except Root Cause (which gets its own accented
 // RootCauseCard). `labelTone` lets specific sections (e.g. "Concept") pick
 // up the AI/Concept purple accent instead of the neutral default.
-function Section({ label, value, divider = true, labelTone = "text-neutral-500" }) {
+function Section({ label, value, divider = true, labelTone = "text-slate-500" }) {
   if (!value) return null;
   return (
-    <div className={divider ? "border-t border-white/10 pt-3.5" : ""}>
+    <div className={divider ? "border-t border-slate-800 pt-3.5" : ""}>
       <p className={`text-[11px] font-semibold uppercase tracking-wide ${labelTone}`}>{label}</p>
-      <p className="mt-1 text-sm text-neutral-200 whitespace-pre-wrap">{value}</p>
+      <p className="mt-1 text-sm text-slate-200 whitespace-pre-wrap">{value}</p>
     </div>
   );
 }
@@ -82,7 +82,7 @@ export default function AnalysisPanel({
           <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-400/90">What You Did Well</p>
           <ul className="mt-1.5 space-y-1">
             {["Correct approach", "Correct state/logic", "Handles edge cases"].map((point) => (
-              <li key={point} className="flex items-start gap-1.5 text-sm text-neutral-300">
+              <li key={point} className="flex items-start gap-1.5 text-sm text-slate-300">
                 <CheckIcon width={14} height={14} className="mt-0.5 shrink-0 text-emerald-400" />
                 {point}
               </li>
@@ -92,16 +92,16 @@ export default function AnalysisPanel({
 
         {successConcept && <Section label="Concept" value={successConcept.name} labelTone={CONCEPT_LABEL_TONE} />}
 
-        <div className="border-t border-white/10 pt-3.5">
+        <div className="border-t border-slate-800 pt-3.5">
           <MasteryCard mastery={mastery} />
         </div>
 
-        <div className="border-t border-white/10 pt-3.5">
+        <div className="border-t border-slate-800 pt-3.5">
           <MicroProofCard microProof={microProof} onEvaluated={onMicroProofEvaluated} />
         </div>
 
-        <div className="border-t border-white/10 pt-3.5">
-          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-neutral-500">Next Challenge</p>
+        <div className="border-t border-slate-800 pt-3.5">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Next Challenge</p>
           <RecommendationCard recommendation={recommendation} />
         </div>
       </div>
@@ -112,7 +112,7 @@ export default function AnalysisPanel({
     return (
       <div className={DARK_CARD_PADDED}>
         <p className={`text-xs font-semibold uppercase tracking-wide ${AI_ANALYSIS_LABEL_TONE}`}>AI Analysis</p>
-        <p className="mt-2 text-sm text-neutral-500">
+        <p className="mt-2 text-sm text-slate-500">
           AlgoLens currently diagnoses Wrong Answer, Time Limit Exceeded, and Memory Limit Exceeded submissions.
           This submission&apos;s verdict isn&apos;t one of those, so there&apos;s nothing to analyze here.
         </p>
@@ -124,15 +124,15 @@ export default function AnalysisPanel({
     return (
       <div className={DARK_CARD_PADDED}>
         <p className={`text-xs font-semibold uppercase tracking-wide ${AI_ANALYSIS_LABEL_TONE}`}>AI Analysis</p>
-        <h2 className="mt-3 text-lg font-semibold leading-snug text-neutral-50">
+        <h2 className="mt-3 text-lg font-semibold leading-snug text-slate-50">
           Understand your mistake,
           <br />
           not just your output.
         </h2>
-        <p className="mt-3 text-xs font-medium uppercase tracking-wide text-neutral-500">AlgoLens will identify:</p>
+        <p className="mt-3 text-xs font-medium uppercase tracking-wide text-slate-500">AlgoLens will identify:</p>
         <ul className="mt-2 space-y-1.5">
           {EMPTY_STATE_POINTS.map((point) => (
-            <li key={point.label} className="flex items-center gap-2 text-sm text-neutral-300">
+            <li key={point.label} className="flex items-center gap-2 text-sm text-slate-300">
               <CheckIcon width={14} height={14} className={`shrink-0 ${point.tone}`} />
               {point.label}
             </li>
@@ -156,21 +156,21 @@ export default function AnalysisPanel({
       <Section label="Your Mistake" value={analysis.evidence} />
       <Section label="Concept" value={analysis.concept} labelTone={CONCEPT_LABEL_TONE} />
 
-      <div className="border-t border-white/10 pt-3.5">
+      <div className="border-t border-slate-800 pt-3.5">
         <MasteryCard mastery={mastery} />
       </div>
 
       <Section label="What You Should Understand" value={analysis.preventionRule} />
 
-      <div className="border-t border-white/10 pt-3.5">
+      <div className="border-t border-slate-800 pt-3.5">
         <MicroProofCard microProof={microProof} onEvaluated={onMicroProofEvaluated} />
       </div>
 
-      <div className="border-t border-white/10 pt-3.5">
+      <div className="border-t border-slate-800 pt-3.5">
         <RecommendationCard recommendation={recommendation} />
       </div>
 
-      <p className="border-t border-white/10 pt-3 text-[11px] text-neutral-600">Diagnosed by {analysis.aiModel}</p>
+      <p className="border-t border-slate-800 pt-3 text-[11px] text-slate-600">Diagnosed by {analysis.aiModel}</p>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export default function MicroProofCard({ microProof, onEvaluated }) {
     return (
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-purple-400/90">Micro-Proof</p>
-        <p className="mt-1.5 text-sm text-neutral-500">No Micro-Proof for this concept yet.</p>
+        <p className="mt-1.5 text-sm text-slate-500">No Micro-Proof for this concept yet.</p>
         <Link href="/concepts" className={`mt-2 inline-block ${DARK_BTN_SECONDARY}`}>
           Extract one from a solved problem
         </Link>
@@ -74,7 +74,7 @@ export default function MicroProofCard({ microProof, onEvaluated }) {
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-wide text-purple-400/90">Prove Your Understanding</p>
-      <p className="mt-1.5 text-sm italic leading-snug text-neutral-300">&ldquo;{microProof.question}&rdquo;</p>
+      <p className="mt-1.5 text-sm italic leading-snug text-slate-300">&ldquo;{microProof.question}&rdquo;</p>
 
       {isComposing ? (
         <>
@@ -82,7 +82,7 @@ export default function MicroProofCard({ microProof, onEvaluated }) {
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             placeholder="Answer in a few sentences..."
-            className="mt-2 h-20 w-full resize-y rounded-lg border border-white/10 bg-white/[0.03] p-2.5 text-sm text-neutral-200 placeholder:text-neutral-600 outline-none focus:border-indigo-400/40"
+            className="mt-2 h-20 w-full resize-y rounded-lg border border-white/10 bg-white/[0.03] p-2.5 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-indigo-400/40"
           />
           {error && <p className="mt-1.5 text-xs text-rose-400">{error}</p>}
           <button onClick={handleEvaluate} disabled={isEvaluating || !answer.trim()} className={`mt-2 w-full ${DARK_BTN_PRIMARY}`}>
@@ -93,13 +93,13 @@ export default function MicroProofCard({ microProof, onEvaluated }) {
         latestAttempt && (
           <div className="mt-2 rounded-lg border border-white/10 bg-white/[0.03] p-3">
             <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-neutral-100">{latestAttempt.score}</span>
-              <span className="text-xs text-neutral-500">/10</span>
-              <span className={`text-xs font-semibold capitalize ${UNDERSTANDING_TONE[latestAttempt.understanding] || "text-neutral-400"}`}>
+              <span className="text-lg font-bold text-slate-100">{latestAttempt.score}</span>
+              <span className="text-xs text-slate-500">/10</span>
+              <span className={`text-xs font-semibold capitalize ${UNDERSTANDING_TONE[latestAttempt.understanding] || "text-slate-400"}`}>
                 {latestAttempt.understanding} understanding
               </span>
             </div>
-            <p className="mt-1.5 text-xs leading-relaxed text-neutral-400">{latestAttempt.feedback}</p>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-400">{latestAttempt.feedback}</p>
             <button onClick={() => setIsComposing(true)} className={`mt-2 ${DARK_BTN_SECONDARY}`}>
               Try Again
             </button>

@@ -22,11 +22,11 @@ export default async function RevisionPage() {
   const { priorityItems, history } = await getRevisionOverview(userId);
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-4xl")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Revision</h1>
-          <p className="mt-1 text-sm text-neutral-400">Revisit the concepts you&apos;re most likely to forget.</p>
+          <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Revision</h1>
+          <p className="mt-1 text-sm text-slate-400">Revisit the concepts you&apos;re most likely to forget.</p>
         </div>
 
         {priorityItems.length === 0 ? (
@@ -39,7 +39,7 @@ export default async function RevisionPage() {
         ) : (
           <>
             <section className="space-y-3">
-              <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">Needs Revision</h2>
+              <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Needs Revision</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {priorityItems.slice(0, TOP_PRIORITY_COUNT).map((item) => (
                   <RevisionPriorityCard key={item.concept} item={item} />

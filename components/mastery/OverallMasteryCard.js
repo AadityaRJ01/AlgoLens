@@ -16,7 +16,7 @@ export default function OverallMasteryCard({ overallMasteryPercent, overallTrend
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-indigo-400/90">Overall Mastery</p>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-neutral-50">
+            <span className="text-3xl font-bold text-slate-50">
               {overallMasteryPercent !== null ? `${overallMasteryPercent}%` : "—"}
             </span>
             {overallTrend && (
@@ -27,7 +27,7 @@ export default function OverallMasteryCard({ overallMasteryPercent, overallTrend
           </div>
         </div>
 
-        <div className="flex gap-5 text-xs text-neutral-500">
+        <div className="flex gap-5 text-xs text-slate-500">
           <Stat label="Studied" value={conceptsStudied} />
           <Stat label="Mastered" value={conceptsMastered} tone="text-emerald-400" />
           <Stat label="Needs Attention" value={conceptsNeedingAttention} tone="text-amber-400" />
@@ -46,11 +46,11 @@ export default function OverallMasteryCard({ overallMasteryPercent, overallTrend
   );
 }
 
-function Stat({ label, value, tone = "text-neutral-300" }) {
+function Stat({ label, value, tone = "text-slate-300" }) {
   return (
     <div className="text-right">
       <p className={`text-sm font-semibold ${tone}`}>{value}</p>
-      <p className="text-neutral-600">{label}</p>
+      <p className="text-slate-600">{label}</p>
     </div>
   );
 }

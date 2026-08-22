@@ -43,7 +43,7 @@ export default function LanguageSelector({ value, onChange }) {
       {isOpen && (
         <ul
           role="listbox"
-          className="absolute right-0 z-20 mt-1 w-32 overflow-hidden rounded-md border border-white/10 bg-neutral-900 py-1 shadow-xl shadow-black/40"
+          className="absolute right-0 z-20 mt-1 w-32 overflow-hidden rounded-md border border-white/10 bg-slate-900 py-1 shadow-xl shadow-black/40"
         >
           {LANGUAGES.map((lang) => (
             <li key={lang.id}>
@@ -56,7 +56,7 @@ export default function LanguageSelector({ value, onChange }) {
                   setIsOpen(false);
                 }}
                 className={`block w-full px-3 py-1.5 text-left text-xs transition-colors ${
-                  value === lang.id ? "bg-indigo-500/10 text-indigo-200" : "text-neutral-300 hover:bg-white/5"
+                  value === lang.id ? "bg-indigo-500/10 text-indigo-200" : "text-slate-300 hover:bg-white/5"
                 }`}
               >
                 {lang.label}

@@ -7,5 +7,5 @@ export const STATUS_META = {
   IMPROVING: { emoji: "🔵", badge: "border-blue-400/25 bg-blue-500/10 text-blue-300", dot: "bg-blue-400", label: "Improving" },
   ATTENTION: { emoji: "🟠", badge: "border-amber-400/25 bg-amber-500/10 text-amber-300", dot: "bg-amber-400", label: "Needs Attention" },
   WEAK: { emoji: "🔴", badge: "border-red-400/25 bg-red-500/10 text-red-300", dot: "bg-red-400", label: "Weak" },
-  NOT_ATTEMPTED: { emoji: "⚪", badge: "border-white/10 bg-white/5 text-neutral-400", dot: "bg-neutral-500", label: "Not Attempted" },
+  NOT_ATTEMPTED: { emoji: "⚪", badge: "border-slate-800 bg-white/5 text-slate-400", dot: "bg-slate-500", label: "Not Attempted" },
 };

@@ -11,7 +11,7 @@ export default function ProblemInsight({ insight }) {
   return (
     <div className={`rounded-lg border px-3 py-2 ${PURPLE_ACCENT.badge}`}>
       <p className={`text-[10px] font-semibold uppercase tracking-wide ${PURPLE_ACCENT.text}`}>Why practice this?</p>
-      <p className="mt-0.5 text-xs leading-snug text-neutral-300">{insight}</p>
+      <p className="mt-0.5 text-xs leading-snug text-slate-300">{insight}</p>
     </div>
   );
 }

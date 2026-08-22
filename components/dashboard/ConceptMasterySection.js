@@ -19,7 +19,7 @@ const STATUS_LABEL = {
   WEAK: { text: "Needs attention", tone: "text-amber-400" },
   DEVELOPING: { text: "Improving", tone: "text-blue-400" },
   STRONG: { text: "Strong", tone: "text-emerald-400" },
-  NEUTRAL: { text: "Developing", tone: "text-neutral-500" },
+  NEUTRAL: { text: "Developing", tone: "text-slate-500" },
 };
 
 function TrendBadge({ trend }) {
@@ -37,15 +37,15 @@ function ConceptRow({ concept, masteryScore, status, trend, isInView, delay }) {
   return (
     <Link
       href="/mastery"
-      className="group block rounded-lg px-2 py-1.5 -mx-2 transition-colors hover:bg-white/[0.04]"
+      className="group block rounded-lg px-2 py-1.5 -mx-2 transition-all hover:bg-[#151D2E] hover:shadow-md hover:shadow-violet-500/5"
     >
       <div className="flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-sm text-neutral-200">{concept}</p>
+          <p className="truncate text-sm text-slate-200">{concept}</p>
           <p className={`text-xs font-medium ${statusLabel.tone}`}>{statusLabel.text}</p>
         </div>
         <span className="flex shrink-0 items-baseline gap-1.5">
-          <span className="font-semibold text-neutral-100">{masteryScore}%</span>
+          <span className="font-semibold text-slate-100">{masteryScore}%</span>
           <TrendBadge trend={trend} />
         </span>
       </div>
@@ -68,8 +68,8 @@ export default function ConceptMasterySection({ masteryList }) {
     <section className={DARK_CARD_PADDED}>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-base font-semibold text-neutral-50">Your Concept Mastery</h2>
-          <p className="mt-0.5 text-sm text-neutral-500">
+          <h2 className="text-base font-semibold text-slate-50">Your Concept Mastery</h2>
+          <p className="mt-0.5 text-sm text-slate-500">
             See where you are strong — and where you need to improve.
           </p>
         </div>

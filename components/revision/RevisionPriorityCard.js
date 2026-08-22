@@ -17,7 +17,7 @@ export default function RevisionPriorityCard({ item }) {
     <div className={`${DARK_CARD_PADDED} border-l-2 ${meta.borderLeft}`}>
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
-          <h3 className="flex items-center gap-1.5 text-base font-semibold text-neutral-50">
+          <h3 className="flex items-center gap-1.5 text-base font-semibold text-slate-50">
             <span aria-hidden="true">{meta.dot}</span>
             {item.concept}
           </h3>
@@ -34,9 +34,9 @@ export default function RevisionPriorityCard({ item }) {
         <div className={`h-full rounded-full bg-gradient-to-r ${meta.bar}`} style={{ width: `${item.masteryScore}%` }} />
       </div>
 
-      <p className="mt-2 text-xs text-neutral-500">Last practiced: {item.lastPracticed}</p>
+      <p className="mt-2 text-xs text-slate-500">Last practiced: {item.lastPracticed}</p>
 
-      <div className="mt-3 border-t border-white/10 pt-3">
+      <div className="mt-3 border-t border-slate-800 pt-3">
         <RevisionReason reason={item.reason} tier={tier} />
       </div>
 

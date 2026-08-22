@@ -11,7 +11,7 @@ export default function EngineStatusBar({ stats }) {
     <div className={`${DARK_CARD_PADDED} flex flex-wrap items-center gap-x-6 gap-y-2`}>
       <div className="flex items-center gap-1.5 text-xs">
         <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
-        <span className="font-medium text-neutral-300">Engine Active</span>
+        <span className="font-medium text-slate-300">Engine Active</span>
       </div>
       <Stat label="Engine Confidence" value={`${stats.confidencePercent}%`} />
       <Stat label="Signals Analyzed" value={stats.signalsAnalyzed} />
@@ -20,9 +20,9 @@ export default function EngineStatusBar({ stats }) {
   );
 }
 
-function Stat({ label, value, tone = "text-neutral-100" }) {
+function Stat({ label, value, tone = "text-slate-100" }) {
   return (
-    <div className="text-xs text-neutral-500">
+    <div className="text-xs text-slate-500">
       {label}: <span className={`font-semibold ${tone}`}>{value}</span>
     </div>
   );

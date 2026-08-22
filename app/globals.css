@@ -24,3 +24,26 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* AlgoLens dark app palette — deep blue-black + indigo + violet, used
+   across the authenticated app (dashboard, analyze, mastery, revision,
+   recommendations, problems, micro-proofs, doubt solver, sidebar). This is
+   reference documentation for the values already applied directly via
+   Tailwind classes in lib/theme.js (DARK_* tokens) and the dark page/
+   component files — not consumed via var() everywhere, since most surfaces
+   use the equivalent named Tailwind utility (slate-50/400/800,
+   violet-500, indigo-500, blue-500) for readability. Kept here as the one
+   place that documents the full system, including the three surface tones
+   that don't correspond to a stock Tailwind shade. */
+:root {
+  --algolens-bg: #080b14; /* main background */
+  --algolens-nav-bg: #0d1220; /* navbar/sidebar */
+  --algolens-card-bg: #111827; /* cards/panels */
+  --algolens-card-hover-bg: #151d2e; /* card hover */
+  --algolens-border: #1e293b; /* borders (= slate-800) */
+  --algolens-text-primary: #f8fafc; /* primary text (= slate-50) */
+  --algolens-text-secondary: #94a3b8; /* secondary text (= slate-400) */
+  --algolens-accent-primary: #8b5cf6; /* primary accent (= violet-500) */
+  --algolens-accent-secondary: #6366f1; /* secondary accent (= indigo-500) */
+  --algolens-glow-blue: #3b82f6; /* blue glow (= blue-500) */
+}

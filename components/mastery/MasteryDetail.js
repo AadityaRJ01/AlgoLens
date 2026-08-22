@@ -30,18 +30,18 @@ export default function MasteryDetail({ detail, breakdown }) {
     <div className="space-y-4">
       <div className={DARK_CARD_PADDED}>
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <h2 className="text-lg font-semibold text-neutral-50">{mastery.concept}</h2>
+          <h2 className="text-lg font-semibold text-slate-50">{mastery.concept}</h2>
           <Badge status={mastery.status} tone="dark">
             {mastery.masteryScore}% — {STATUS_HEADING[mastery.status] || mastery.status}
           </Badge>
         </div>
-        <p className="mt-1.5 text-sm text-neutral-400">{supportingLine(mastery, weakestSubconcept)}</p>
+        <p className="mt-1.5 text-sm text-slate-400">{supportingLine(mastery, weakestSubconcept)}</p>
 
-        <div className="mt-4 border-t border-white/10 pt-4">
+        <div className="mt-4 border-t border-slate-800 pt-4">
           <MasteryBreakdown breakdown={breakdown} />
         </div>
 
-        <div className="mt-4 border-t border-white/10 pt-4">
+        <div className="mt-4 border-t border-slate-800 pt-4">
           <CommonMistakes mistakes={detail.commonMistakes} submissionCount={detail.mistakesSubmissionCount} />
         </div>
       </div>

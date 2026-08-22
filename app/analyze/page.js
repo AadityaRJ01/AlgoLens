@@ -183,11 +183,11 @@ export default async function AnalyzePage({ searchParams }) {
       : null;
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-[100rem]")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Analyze</h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Analyze</h1>
+          <p className="mt-1 text-sm text-slate-400">
             Understand your solution, identify your mistakes, and learn what to practice next.
           </p>
           <FlowStrip />
@@ -250,7 +250,7 @@ function FlowStrip() {
       {FLOW_STAGES.map((stage, i) => (
         <span key={stage.label} className="flex items-center gap-1.5">
           <span className={stage.tone}>{stage.label}</span>
-          {i < FLOW_STAGES.length - 1 && <span className="text-neutral-700">→</span>}
+          {i < FLOW_STAGES.length - 1 && <span className="text-slate-700">→</span>}
         </span>
       ))}
     </p>
@@ -259,11 +259,11 @@ function FlowStrip() {
 
 function Shell({ children }) {
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-3xl")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Analyze</h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Analyze</h1>
+          <p className="mt-1 text-sm text-slate-400">
             Understand your solution, identify your mistakes, and learn what to practice next.
           </p>
           <FlowStrip />

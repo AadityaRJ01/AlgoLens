@@ -9,7 +9,7 @@ export default function MasteryCard({ mastery }) {
     return (
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-400/90">Concept Mastery</p>
-        <p className="mt-1.5 text-sm text-neutral-500">Not enough evidence yet.</p>
+        <p className="mt-1.5 text-sm text-slate-500">Not enough evidence yet.</p>
       </div>
     );
   }
@@ -19,11 +19,11 @@ export default function MasteryCard({ mastery }) {
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-wide text-blue-400/90">Concept Mastery</p>
-      <p className="mt-1 text-2xl font-bold text-neutral-50">{score}%</p>
+      <p className="mt-1 text-2xl font-bold text-slate-50">{score}%</p>
       {trend && (
         <p className={`mt-0.5 text-xs font-medium ${trend.direction === "up" ? "text-emerald-400" : "text-rose-400"}`}>
           {trend.direction === "up" ? "↑" : "↓"} {Math.round(trend.deltaPoints)}%{" "}
-          <span className="text-neutral-500">recent performance</span>
+          <span className="text-slate-500">recent performance</span>
         </p>
       )}
       <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">

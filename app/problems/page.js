@@ -38,18 +38,18 @@ export default async function ProblemsPage({ searchParams }) {
     catalogCount > 0 ? await getProblemsListData(userId, { q, difficulty, topic, status, page }) : null;
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-5xl")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Problems</h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Problems</h1>
+          <p className="mt-1 text-sm text-slate-400">
             Practice problems that strengthen the concepts you actually need to improve.
           </p>
         </div>
 
         {catalogCount === 0 && (
           <div className={`${DARK_CARD} p-6 space-y-3`}>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-slate-400">
               The global problem catalog hasn&apos;t been initialized yet, so there&apos;s no pool of problems to browse.
             </p>
             <InitCatalogButton />
@@ -82,7 +82,7 @@ export default async function ProblemsPage({ searchParams }) {
                 <BookmarkableProblemList problems={data.problems} />
 
                 {data.totalPages > 1 && (
-                  <div className="flex items-center justify-between gap-3 text-xs text-neutral-500">
+                  <div className="flex items-center justify-between gap-3 text-xs text-slate-500">
                     <span>
                       Page {page} of {data.totalPages} · {data.totalCount} problem{data.totalCount === 1 ? "" : "s"}
                     </span>
@@ -117,7 +117,7 @@ function PageLink({ current, page, children }) {
   if (current.status) sp.set("status", current.status);
   sp.set("page", String(page));
   return (
-    <Link href={`/problems?${sp.toString()}`} className="rounded-lg border border-white/10 px-3 py-1.5 font-medium text-neutral-300 hover:bg-white/5">
+    <Link href={`/problems?${sp.toString()}`} className="rounded-lg border border-white/10 px-3 py-1.5 font-medium text-slate-300 hover:bg-white/5">
       {children}
     </Link>
   );

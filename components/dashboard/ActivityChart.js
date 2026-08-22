@@ -6,8 +6,8 @@ import { DARK_CARD_PADDED } from "@/lib/theme";
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-xs shadow-xl">
-      <p className="font-medium text-neutral-200">{label}</p>
+    <div className="rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-xs shadow-xl">
+      <p className="font-medium text-slate-200">{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} style={{ color: p.fill }}>
           {p.name}: {p.value}
@@ -27,8 +27,8 @@ export default function ActivityChart({ data }) {
 
   return (
     <section className={`${DARK_CARD_PADDED} flex h-full flex-col`}>
-      <h2 className="text-base font-semibold text-neutral-50">Learning Activity</h2>
-      <p className="mt-0.5 text-sm text-neutral-500">Problems attempted vs. solved, last 7 days.</p>
+      <h2 className="text-base font-semibold text-slate-50">Learning Activity</h2>
+      <p className="mt-0.5 text-sm text-slate-500">Problems attempted vs. solved, last 7 days.</p>
 
       <div className="mt-4 h-40 w-full flex-1">
         {hasActivity ? (
@@ -43,7 +43,7 @@ export default function ActivityChart({ data }) {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="flex h-full items-center text-sm text-neutral-500">
+          <p className="flex h-full items-center text-sm text-slate-500">
             No activity in the last 7 days yet.
           </p>
         )}

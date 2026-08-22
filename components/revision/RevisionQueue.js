@@ -11,7 +11,7 @@ import { getStatusTier, TIER_META } from "./statusTier";
 export default function RevisionQueue({ items }) {
   return (
     <div className={DARK_CARD_PADDED}>
-      <h2 className="text-base font-semibold text-neutral-50">Revision Queue</h2>
+      <h2 className="text-base font-semibold text-slate-50">Revision Queue</h2>
 
       <ul className="mt-3 divide-y divide-white/5">
         {items.map((item) => {
@@ -20,18 +20,18 @@ export default function RevisionQueue({ items }) {
           return (
             <li key={item.concept} className="flex items-start justify-between gap-3 py-3 first:pt-0 last:pb-0">
               <div className="min-w-0">
-                <p className="text-sm font-medium text-neutral-100">
+                <p className="text-sm font-medium text-slate-100">
                   <span aria-hidden="true" className="mr-1.5">{meta.dot}</span>
                   {item.concept}
                 </p>
-                <p className="mt-0.5 text-xs text-neutral-500">{item.weakestSubarea}</p>
+                <p className="mt-0.5 text-xs text-slate-500">{item.weakestSubarea}</p>
                 <div className="mt-1">
                   <RevisionReason reason={item.reason} tier={tier} compact />
                 </div>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-1.5 text-right">
                 <span className={`text-xs font-semibold ${meta.text}`}>{meta.queueLabel}</span>
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-slate-500">
                   {item.masteryScore}%{item.recommendedProblemCount > 0 ? ` · ${item.recommendedProblemCount} problem${item.recommendedProblemCount === 1 ? "" : "s"}` : ""}
                 </span>
                 {item.hasRevisionSchedule ? (

@@ -7,7 +7,7 @@ import { CARD_PADDED, BTN_SECONDARY, DARK_CARD_PADDED, DARK_BTN_SECONDARY } from
 export default function EmptyState({ message, actionHref, actionLabel, tone }) {
   const isDark = tone === "dark";
   return (
-    <div className={`${isDark ? DARK_CARD_PADDED : CARD_PADDED} text-sm ${isDark ? "text-neutral-400" : "text-slate-600"}`}>
+    <div className={`${isDark ? DARK_CARD_PADDED : CARD_PADDED} text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
       <p>{message}</p>
       {actionHref && actionLabel && (
         <Link href={actionHref} className={`inline-block mt-3 ${isDark ? DARK_BTN_SECONDARY : BTN_SECONDARY}`}>

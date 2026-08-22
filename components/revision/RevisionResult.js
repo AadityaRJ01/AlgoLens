@@ -27,15 +27,15 @@ export default function RevisionResult({ result, onStillShaky, isMarkingShaky, s
       </span>
 
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-3xl font-bold text-neutral-50">{attempt.score}</span>
-        <span className="text-sm text-neutral-500">/10</span>
+        <span className="text-3xl font-bold text-slate-50">{attempt.score}</span>
+        <span className="text-sm text-slate-500">/10</span>
       </div>
 
       {masteryDelta && (
-        <div className="mt-3 grid grid-cols-2 gap-4 border-t border-white/10 pt-3 text-sm">
+        <div className="mt-3 grid grid-cols-2 gap-4 border-t border-slate-800 pt-3 text-sm">
           <div>
-            <span className="text-xs text-neutral-500">Mastery</span>
-            <p className="font-semibold text-neutral-100">
+            <span className="text-xs text-slate-500">Mastery</span>
+            <p className="font-semibold text-slate-100">
               {masteryDelta.previousScore !== null ? `${masteryDelta.previousScore}% → ` : ""}
               <span
                 className={
@@ -56,8 +56,8 @@ export default function RevisionResult({ result, onStillShaky, isMarkingShaky, s
           </div>
           {revision && (
             <div>
-              <span className="text-xs text-neutral-500">Next review</span>
-              <p className="font-semibold text-neutral-100">
+              <span className="text-xs text-slate-500">Next review</span>
+              <p className="font-semibold text-slate-100">
                 {formatDays(revision.currentIntervalDays)}
                 {stillShaky ? " (still shaky)" : ""}
               </p>
@@ -66,19 +66,19 @@ export default function RevisionResult({ result, onStillShaky, isMarkingShaky, s
         </div>
       )}
 
-      {explanation && <p className="mt-3 border-t border-white/10 pt-3 text-sm text-neutral-400">{explanation}</p>}
+      {explanation && <p className="mt-3 border-t border-slate-800 pt-3 text-sm text-slate-400">{explanation}</p>}
 
-      <div className="mt-3 border-t border-white/10 pt-3">
+      <div className="mt-3 border-t border-slate-800 pt-3">
         <p className={`text-[11px] font-semibold uppercase tracking-wide ${isWeak ? "text-amber-400/90" : "text-emerald-400/90"}`}>
           {isWeak ? "What's Still Weak" : "What Improved"}
         </p>
-        <p className="mt-1 text-sm text-neutral-300 whitespace-pre-wrap">{attempt.whatWasCorrect}</p>
+        <p className="mt-1 text-sm text-slate-300 whitespace-pre-wrap">{attempt.whatWasCorrect}</p>
       </div>
 
       {attempt.missingPoints?.length > 0 && (
         <div className="mt-3">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-400/90">What Is Missing</p>
-          <ul className="mt-1 list-disc list-inside space-y-0.5 text-sm text-neutral-300">
+          <ul className="mt-1 list-disc list-inside space-y-0.5 text-sm text-slate-300">
             {attempt.missingPoints.map((point, i) => (
               <li key={i}>{point}</li>
             ))}
@@ -87,8 +87,8 @@ export default function RevisionResult({ result, onStillShaky, isMarkingShaky, s
       )}
 
       <div className="mt-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-neutral-500">Feedback</p>
-        <p className="mt-1 text-sm text-neutral-300 whitespace-pre-wrap">{attempt.feedback}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Feedback</p>
+        <p className="mt-1 text-sm text-slate-300 whitespace-pre-wrap">{attempt.feedback}</p>
       </div>
 
       {shakyError && <p className="mt-3 text-sm text-rose-400">{shakyError}</p>}

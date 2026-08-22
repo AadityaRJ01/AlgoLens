@@ -16,10 +16,10 @@ export default function RecommendedImprovement({ concept, weakestSubconcept, rec
 
       {weakestSubconcept && (
         <div className="mt-1.5">
-          <p className="text-sm text-neutral-400">Your weakest area is:</p>
-          <p className="text-base font-semibold text-neutral-100">{weakestSubconcept.name}</p>
-          <p className="mt-1 text-sm text-neutral-400">
-            Recommended action: <span className="text-neutral-200">Practice a couple of problems focused on {weakestSubconcept.name.toLowerCase()}.</span>
+          <p className="text-sm text-slate-400">Your weakest area is:</p>
+          <p className="text-base font-semibold text-slate-100">{weakestSubconcept.name}</p>
+          <p className="mt-1 text-sm text-slate-400">
+            Recommended action: <span className="text-slate-200">Practice a couple of problems focused on {weakestSubconcept.name.toLowerCase()}.</span>
           </p>
         </div>
       )}

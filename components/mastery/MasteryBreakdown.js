@@ -10,8 +10,8 @@ export default function MasteryBreakdown({ breakdown }) {
         {breakdown.map((item) => (
           <div key={item.name}>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-neutral-300">{item.name}</span>
-              <span className="font-medium text-neutral-200">{item.score}%</span>
+              <span className="text-slate-300">{item.name}</span>
+              <span className="font-medium text-slate-200">{item.score}%</span>
             </div>
             <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
               <div

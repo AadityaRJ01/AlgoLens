@@ -82,16 +82,18 @@ export default async function ConceptDetailPage({ params }) {
     : null;
 
   return (
-    <div className={pageClass("max-w-4xl")}>
-      <Link href="/concepts" className="text-sm text-blue-600 hover:underline">
-        &larr; Back to Micro-Proofs
-      </Link>
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
+      <div className={pageClass("max-w-3xl")}>
+        <Link href="/concepts" className="text-sm text-slate-500 hover:text-slate-300">
+          ← Back to Micro-Proofs
+        </Link>
 
-      <ConceptWorkspace
-        submission={plainSubmission}
-        initialConcept={initialConcept}
-        initialMicroProof={initialMicroProof}
-      />
+        <ConceptWorkspace
+          submission={plainSubmission}
+          initialConcept={initialConcept}
+          initialMicroProof={initialMicroProof}
+        />
+      </div>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function ProblemRow({ problem, isBookmarked, onToggleBookmark }) 
         tabIndex={0}
         onClick={() => setIsExpanded((v) => !v)}
         onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setIsExpanded((v) => !v)}
-        className="flex cursor-pointer flex-col gap-2 px-4 py-3 transition-colors hover:bg-white/[0.03] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
+        className="flex cursor-pointer flex-col gap-2 px-4 py-3 transition-all hover:bg-[#151D2E] hover:shadow-md hover:shadow-violet-500/5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
       >
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
@@ -41,7 +41,7 @@ export default function ProblemRow({ problem, isBookmarked, onToggleBookmark }) 
               }}
               aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this problem"}
               aria-pressed={isBookmarked}
-              className="shrink-0 text-neutral-600 transition-colors hover:text-amber-300"
+              className="shrink-0 text-slate-600 transition-colors hover:text-amber-300"
             >
               <BookmarkIcon
                 width={15}
@@ -55,8 +55,8 @@ export default function ProblemRow({ problem, isBookmarked, onToggleBookmark }) 
             ) : (
               <span className="h-3.5 w-3.5 shrink-0 rounded-full border border-white/15" />
             )}
-            <span className="truncate text-sm font-medium text-neutral-100">{problem.title}</span>
-            <span className={`shrink-0 text-xs font-semibold ${DARK_DIFFICULTY_STYLES[problem.difficulty] || "text-neutral-400"}`}>
+            <span className="truncate text-sm font-semibold text-white">{problem.title}</span>
+            <span className={`shrink-0 text-xs font-semibold ${DARK_DIFFICULTY_STYLES[problem.difficulty] || "text-slate-400"}`}>
               {problem.difficulty}
             </span>
             {problem.isRecommended && (
@@ -67,7 +67,7 @@ export default function ProblemRow({ problem, isBookmarked, onToggleBookmark }) 
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-1.5 pl-[3.375rem] sm:pl-[3.375rem]">
             {problem.topicTags.slice(0, 3).map((tag) => (
-              <span key={tag} className="rounded-full bg-white/5 px-2 py-0.5 text-[11px] text-neutral-500">
+              <span key={tag} className="rounded-full bg-slate-800/80 px-2 py-0.5 text-[11px] text-slate-300 border border-slate-700/50">
                 {tag}
               </span>
             ))}
@@ -85,8 +85,8 @@ export default function ProblemRow({ problem, isBookmarked, onToggleBookmark }) 
 
         <div className="flex shrink-0 items-center gap-3 pl-[3.375rem] sm:pl-0">
           <ProblemStatus status={problem.status} />
-          {problem.masteryScore !== null && <span className="text-xs text-neutral-500">{problem.masteryScore}%</span>}
-          {problem.lastAttempted && <span className="hidden text-xs text-neutral-600 md:inline">{problem.lastAttempted}</span>}
+          {problem.masteryScore !== null && <span className="text-xs text-slate-500">{problem.masteryScore}%</span>}
+          {problem.lastAttempted && <span className="hidden text-xs text-slate-600 md:inline">{problem.lastAttempted}</span>}
           {problem.url && (
             <a
               href={problem.url}
@@ -107,7 +107,7 @@ export default function ProblemRow({ problem, isBookmarked, onToggleBookmark }) 
 
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-wide text-red-400/90">Learning Signal</p>
-            <p className="mt-1 text-sm text-neutral-300">
+            <p className="mt-1 text-sm text-slate-300">
               {problem.learningSignal || "No failure history recorded for this concept yet."}
             </p>
           </div>
