@@ -37,7 +37,7 @@ export default function InitCatalogButton() {
       >
         {isSyncing ? "Initializing catalog..." : "Initialize Problem Catalog"}
       </button>
-      {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="mt-2 text-sm text-rose-400">{error}</p>}
     </div>
   );
 }
