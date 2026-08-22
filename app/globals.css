@@ -24,3 +24,106 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Smooth in-page scrolling for landing-page anchor links (e.g. "See How It
+   Works"). Disabled under prefers-reduced-motion below. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Landing page entrance animations (Hero copy + product preview). Subtle,
+   one-shot fade/slide on initial paint — no JS/observer needed since the
+   hero is always above the fold. */
+@keyframes landing-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-animate-in {
+  animation: landing-fade-in-up 0.7s ease-out both;
+}
+
+.landing-animate-in-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.landing-animate-in-delay-2 {
+  animation-delay: 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .landing-animate-in,
+  .landing-animate-in-delay-1,
+  .landing-animate-in-delay-2 {
+    animation: none;
+  }
+}
+
+/* Slow ambient glow "drift" used behind the feature showcase section —
+   a subtle position/scale/opacity breathing effect, not a flashy animation. */
+@keyframes landing-glow-drift {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(-46%) translateY(1.5%) scale(1.06);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 0.6;
+  }
+}
+
+.landing-glow-drift {
+  animation: landing-glow-drift 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-glow-drift {
+    animation: none;
+    transform: translateX(-50%);
+  }
+}
+
+/* Subtle "blueprint" dotted grid used behind the Learning Loop system
+   diagram panel, to make that section read as visually distinct. Static
+   decoration only — no animation. */
+.landing-schematic-grid {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Very subtle idle "float" used on the Hero product preview and the large
+   product-demo browser window, so those panels read as alive rather than
+   static screenshots. */
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.landing-float {
+  animation: landing-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-float {
+    animation: none;
+  }
+}
