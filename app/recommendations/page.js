@@ -2,11 +2,24 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getOrGenerateRecommendations, CatalogNotInitializedError } from "@/lib/recommendations";
+import { getRecommendationEngineData } from "@/lib/recommendationsInsights";
 import RefreshButton from "./RefreshButton";
 import InitCatalogButton from "./InitCatalogButton";
 import EmptyState from "@/components/ui/EmptyState";
-import { DARK_CARD_PADDED, DARK_DIFFICULTY_STYLES, DARK_PRIORITY_STYLES, DARK_BTN_PRIMARY, pageClass } from "@/lib/theme";
+import { DARK_CARD_PADDED, pageClass } from "@/lib/theme";
+import EngineStatusBar from "@/components/recommendations/EngineStatusBar";
+import PrimaryPrescriptionCard from "@/components/recommendations/PrimaryPrescriptionCard";
+import CognitiveGapClusters from "@/components/recommendations/CognitiveGapClusters";
+import ProgressivePathway from "@/components/recommendations/ProgressivePathway";
+import RecentlyPracticedTable from "@/components/recommendations/RecentlyPracticedTable";
 
+// AlgoLens's AI diagnostic engine — the "why" behind every recommendation,
+// not just a problem list. Problem SELECTION is never recomputed here: the
+// hero and every cluster candidate come straight from lib/recommendations.js
+// (Phase 8's deterministic engine + its real Groq-authored reasons).
+// lib/recommendationsInsights.js only adds real presentation data
+// (clustering, traceback links, pathway, history) plus a couple of clearly
+// isolated, deterministic estimates — see that file's header comment.
 export default async function RecommendationsPage() {
   const { userId } = await auth();
   if (!userId) {
@@ -29,13 +42,18 @@ export default async function RecommendationsPage() {
     }
   }
 
+  const engineData =
+    masteryCount > 0 && !catalogNotInitialized ? await getRecommendationEngineData(userId, recommendations) : null;
+
   return (
     <div className="min-h-screen bg-[#05060a] text-neutral-50">
-      <div className={pageClass("max-w-4xl")}>
+      <div className={pageClass("max-w-5xl")}>
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">What Should I Solve Next?</h1>
-            <p className="mt-1 text-sm text-neutral-400">Based on your current learning profile.</p>
+            <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Recommendations</h1>
+            <p className="mt-1 text-sm text-neutral-400">
+              Precision-engineered problem sets generated from your recent learning signals.
+            </p>
           </div>
           {masteryCount > 0 && <RefreshButton />}
         </div>
@@ -62,61 +80,18 @@ export default async function RecommendationsPage() {
           />
         )}
 
-        {recommendations.length > 0 && (
-          <ol className="space-y-4">
-            {recommendations.map((rec, i) => (
-              <li key={rec.id} className={DARK_CARD_PADDED}>
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-neutral-500 font-semibold">{i + 1}.</span>
-                      <h2 className="font-semibold text-neutral-50">{rec.problem.title}</h2>
-                      <span className={`text-sm font-semibold ${DARK_DIFFICULTY_STYLES[rec.problem.difficulty] || "text-neutral-400"}`}>
-                        {rec.problem.difficulty}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {rec.problem.topicTags.map((tag) => (
-                        <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-neutral-400">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <span
-                    className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full border ${DARK_PRIORITY_STYLES[rec.priorityLabel] || DARK_PRIORITY_STYLES.Low}`}
-                  >
-                    Priority: {rec.priorityLabel}
-                  </span>
-                </div>
+        {engineData && (
+          <>
+            <EngineStatusBar stats={engineData.engineStats} />
 
-                <div className="mt-3 text-sm text-neutral-400 flex flex-wrap gap-x-4 gap-y-1">
-                  <span>
-                    Target: <span className="font-medium text-neutral-200">{rec.targetConcept}</span>
-                  </span>
-                  <span>
-                    Mastery: <span className="font-medium text-neutral-200">{rec.masteryScore}%</span>
-                  </span>
-                </div>
+            {engineData.hero && <PrimaryPrescriptionCard hero={engineData.hero} />}
 
-                <div className="mt-3 pt-3 border-t border-white/10">
-                  <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">Why</h3>
-                  <p className="mt-1 text-sm text-neutral-300 whitespace-pre-wrap">{rec.reason}</p>
-                </div>
+            {engineData.clusters.length > 0 && <CognitiveGapClusters clusters={engineData.clusters} />}
 
-                {rec.problem.url && (
-                  <a
-                    href={rec.problem.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-block mt-4 ${DARK_BTN_PRIMARY}`}
-                  >
-                    Solve on LeetCode
-                  </a>
-                )}
-              </li>
-            ))}
-          </ol>
+            {engineData.pathway && <ProgressivePathway pathway={engineData.pathway} />}
+
+            <RecentlyPracticedTable history={engineData.completedHistory} />
+          </>
         )}
       </div>
     </div>

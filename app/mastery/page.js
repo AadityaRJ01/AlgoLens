@@ -1,75 +1,72 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
-import Badge from "@/components/ui/Badge";
+import { getMasteryOverview, getConceptDetail } from "@/lib/masteryInsights";
+import { getMockSubconceptBreakdown } from "@/lib/mockSubconcepts";
+import { pageClass } from "@/lib/theme";
 import EmptyState from "@/components/ui/EmptyState";
-import { DARK_CARD_PADDED, pageClass } from "@/lib/theme";
+import OverallMasteryCard from "@/components/mastery/OverallMasteryCard";
+import ConceptMasteryList from "@/components/mastery/ConceptMasteryList";
+import MasteryDetail from "@/components/mastery/MasteryDetail";
 
-export default async function MasteryPage() {
+// The Mastery page: how well do I actually understand each concept, why am
+// I weak, am I improving, and what should I practice next. All real data
+// (see lib/masteryInsights.js) except the sub-concept breakdown, which is
+// isolated mock data (lib/mockSubconcepts.js) since no sub-concept schema
+// exists yet. Concept selection is a real navigable link (?concept=...),
+// the same master/detail pattern already used on /analyze.
+export default async function MasteryPage({ searchParams }) {
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
   }
 
-  const mastery = await prisma.conceptMastery.findMany({
-    where: { clerkUserId: userId },
-    orderBy: { masteryScore: "desc" },
-  });
+  const params = await searchParams;
+  const { masteryList, summary } = await getMasteryOverview(userId);
 
   return (
     <div className="min-h-screen bg-[#05060a] text-neutral-50">
-      <div className={pageClass("max-w-4xl")}>
+      <div className={pageClass("max-w-6xl")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Concept Mastery</h1>
-          <p className="mt-1 text-sm text-neutral-400">
-            A deterministic score for how well you understand each concept, calculated from
-            your Micro-Proof answers, failure history, and solved problems.
-          </p>
+          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Mastery</h1>
+          <p className="mt-1 text-sm text-neutral-400">Track what you understand — and what needs more work.</p>
         </div>
 
-        {mastery.length === 0 && (
+        {masteryList.length === 0 ? (
           <EmptyState
             tone="dark"
             message="Complete a few Micro-Proofs to build your learning profile."
             actionHref="/concepts"
             actionLabel="Extract a concept"
           />
-        )}
-
-        {mastery.length > 0 && (
-          <ul className="space-y-3">
-            {mastery.map((m) => (
-              <li key={m.concept} className={`${DARK_CARD_PADDED} p-5`}>
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <h2 className="font-semibold text-neutral-50">{m.concept}</h2>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-2xl font-bold text-neutral-50">{m.masteryScore}%</span>
-                    <Badge status={m.status} tone="dark" />
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-white/10 text-sm text-neutral-400 space-y-1">
-                  <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wide">
-                    Evidence
-                  </h3>
-                  <ul className="space-y-0.5">
-                    <li>
-                      Micro-Proof average:{" "}
-                      {m.averageMicroProofScore !== null ? `${m.averageMicroProofScore.toFixed(1)}/10` : "No attempts yet"}
-                    </li>
-                    <li>Micro-Proof attempts: {m.totalMicroProofAttempts}</li>
-                    <li>Concept-specific failures: {m.failureCount}</li>
-                    <li>Accepted problems: {m.successfulProblemCount}</li>
-                  </ul>
-                  <p className="text-xs text-neutral-600 pt-1">
-                    Last evaluated {new Date(m.lastEvaluatedAt).toLocaleString()}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+        ) : (
+          <MasteryBody masteryList={masteryList} summary={summary} userId={userId} requestedConcept={params?.concept} />
         )}
       </div>
     </div>
+  );
+}
+
+async function MasteryBody({ masteryList, summary, userId, requestedConcept }) {
+  const selectedConcept =
+    (requestedConcept && masteryList.find((m) => m.concept === requestedConcept)?.concept) || masteryList[0].concept;
+
+  const detail = await getConceptDetail(userId, selectedConcept);
+  const breakdown = detail ? getMockSubconceptBreakdown(detail.mastery.concept, detail.mastery.masteryScore) : [];
+
+  return (
+    <>
+      <OverallMasteryCard
+        overallMasteryPercent={summary.overallMasteryPercent}
+        overallTrend={summary.overallTrend}
+        conceptsStudied={summary.conceptsStudied}
+        conceptsMastered={summary.conceptsMastered}
+        conceptsNeedingAttention={summary.conceptsNeedingAttention}
+      />
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_1.5fr] lg:items-start">
+        <ConceptMasteryList masteryList={masteryList} selectedConcept={selectedConcept} />
+        {detail && <MasteryDetail detail={detail} breakdown={breakdown} />}
+      </div>
+    </>
   );
 }
