@@ -176,3 +176,11 @@ export function SearchIcon(props) {
     </svg>
   );
 }
+
+export function BookmarkIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 3.5h12a.5.5 0 0 1 .5.5v16.5l-6.5-4-6.5 4V4a.5.5 0 0 1 .5-.5Z" />
+    </svg>
+  );
+}
