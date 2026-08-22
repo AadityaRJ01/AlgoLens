@@ -7,7 +7,7 @@ import LanguageSelector from "./LanguageSelector";
 const Editor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-80 w-full items-center justify-center text-xs text-neutral-600 lg:h-[30rem]">
+    <div className="flex h-80 w-full items-center justify-center text-xs text-slate-600 lg:h-[30rem]">
       Loading editor…
     </div>
   ),
@@ -42,12 +42,12 @@ function beforeMount(monaco) {
       { token: "annotation", foreground: "a5b4fc" },
     ],
     colors: {
-      "editor.background": "#05060a",
+      "editor.background": "#0B0F17",
       "editor.lineHighlightBackground": "#ffffff0a",
       "editor.selectionBackground": "#6366f14d",
       "editorLineNumber.foreground": "#52525b",
       "editorLineNumber.activeForeground": "#a5b4fc",
-      "editorGutter.background": "#05060a",
+      "editorGutter.background": "#0B0F17",
       "editorCursor.foreground": "#818cf8",
       "editorWhitespace.foreground": "#27272a",
       "editorIndentGuide.background": "#ffffff0f",
@@ -94,21 +94,21 @@ export default function CodeEditorPanel({
 }) {
   return (
     <div className={`${DARK_CARD} flex flex-col`}>
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-800 px-4 py-3">
         <div className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-          <span className="ml-2 text-xs text-neutral-500">Your solution</span>
+          <span className="ml-2 text-xs text-slate-500">Your solution</span>
         </div>
         <LanguageSelector value={language} onChange={onLanguageChange} />
       </div>
 
       <div className="relative h-80 lg:h-[30rem]">
         {!sourceCode && (
-          <div className="pointer-events-none absolute left-16 top-3 z-10 text-[13px] leading-relaxed text-neutral-600">
+          <div className="pointer-events-none absolute left-16 top-3 z-10 text-[13px] leading-relaxed text-slate-600">
             <p>Paste or edit your submitted code here…</p>
-            <p className="mt-0.5 text-xs text-neutral-700">Ctrl + V to paste</p>
+            <p className="mt-0.5 text-xs text-slate-700">Ctrl + V to paste</p>
           </div>
         )}
         <Editor
@@ -122,12 +122,12 @@ export default function CodeEditorPanel({
         />
       </div>
 
-      <div className="flex items-center gap-3 border-t border-white/10 p-4">
+      <div className="flex items-center gap-3 border-t border-slate-800 p-4">
         <button
           type="button"
           disabled
           title="Code execution isn't available yet"
-          className="rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-neutral-500 opacity-60 cursor-not-allowed"
+          className="rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-500 opacity-60 cursor-not-allowed"
         >
           Run Code
         </button>
@@ -141,7 +141,7 @@ export default function CodeEditorPanel({
             {isAnalyzing ? "Analyzing…" : "Analyze Solution →"}
           </button>
         ) : (
-          <p className="flex-1 text-center text-xs text-neutral-500">
+          <p className="flex-1 text-center text-xs text-slate-500">
             {isAccepted
               ? "This submission passed — see what it demonstrates on the right."
               : "AlgoLens analyzes Wrong Answer, Time Limit Exceeded, and Memory Limit Exceeded submissions."}

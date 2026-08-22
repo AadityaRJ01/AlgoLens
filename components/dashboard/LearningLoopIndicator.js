@@ -11,7 +11,7 @@ const STAGES = ["Problem", "Failure", "Concept", "Mastery", "Revision", "Recomme
 export default function LearningLoopIndicator({ currentStage }) {
   return (
     <section className={`${DARK_CARD_PADDED} flex h-full flex-col`}>
-      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Your Learning Loop</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Your Learning Loop</p>
 
       <div className="mt-3 flex-1 space-y-1">
         {STAGES.map((stage, i) => {
@@ -24,7 +24,7 @@ export default function LearningLoopIndicator({ currentStage }) {
                     isActive ? "bg-indigo-400 shadow-[0_0_6px_1px_rgba(129,140,248,0.7)]" : "bg-white/15"
                   }`}
                 />
-                <span className={`text-xs ${isActive ? "font-semibold text-neutral-100" : "text-neutral-500"}`}>
+                <span className={`text-xs ${isActive ? "font-semibold text-slate-100" : "text-slate-500"}`}>
                   {stage}
                 </span>
               </div>
@@ -33,12 +33,12 @@ export default function LearningLoopIndicator({ currentStage }) {
           );
         })}
         <div className="flex items-center gap-2 pt-0.5">
-          <span aria-hidden="true" className="ml-[1px] text-xs text-neutral-600">↻</span>
-          <span className="text-[11px] text-neutral-600">back to Problem</span>
+          <span aria-hidden="true" className="ml-[1px] text-xs text-slate-600">↻</span>
+          <span className="text-[11px] text-slate-600">back to Problem</span>
         </div>
       </div>
 
-      <p className="mt-3 border-t border-white/10 pt-3 text-xs text-neutral-500">
+      <p className="mt-3 border-t border-slate-800 pt-3 text-xs text-slate-500">
         Current stage: <span className="font-medium text-indigo-300">{currentStage}</span>
       </p>
     </section>

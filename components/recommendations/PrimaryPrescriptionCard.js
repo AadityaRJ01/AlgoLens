@@ -17,26 +17,26 @@ export default function PrimaryPrescriptionCard({ hero }) {
         aria-hidden="true"
         className="pointer-events-none absolute -inset-px rounded-xl bg-gradient-to-br from-purple-500/20 via-blue-500/10 to-transparent blur-sm"
       />
-      <div className="relative rounded-xl border border-purple-400/20 bg-neutral-900/70 p-5 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Top Pick</p>
+      <div className="relative rounded-xl border border-purple-400/20 bg-[#151C28] p-5 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Top Pick</p>
 
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <span className={`text-sm font-semibold ${DARK_DIFFICULTY_STYLES[hero.problem.difficulty] || "text-neutral-400"}`}>
+          <span className={`text-sm font-semibold ${DARK_DIFFICULTY_STYLES[hero.problem.difficulty] || "text-slate-400"}`}>
             {hero.problem.difficulty}
           </span>
-          <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-neutral-400">{hero.targetConcept}</span>
+          <span className="rounded-full bg-slate-800/80 px-2 py-0.5 text-xs text-slate-300 border border-slate-700/50">{hero.targetConcept}</span>
           <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${meta.badge}`}>
             {meta.emoji} Focus: {hero.targetConcept}
           </span>
         </div>
 
-        <h2 className="mt-3 text-2xl font-bold text-neutral-50">{hero.problem.title}</h2>
+        <h2 className="mt-3 text-2xl font-bold text-white">{hero.problem.title}</h2>
 
         <div className={`mt-4 rounded-lg border ${PURPLE_ACCENT.badge} p-4`}>
           <p className={`text-[11px] font-semibold uppercase tracking-wide ${PURPLE_ACCENT.text}`}>Why AlgoLens Chose This</p>
-          <p className="mt-1.5 text-sm leading-relaxed text-neutral-200">{hero.reason}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-200">{hero.reason}</p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-white/10 pt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-800 pt-3">
             <span className="text-xs font-medium text-blue-300">
               📈 Estimated Mastery Gain: +{hero.estimatedGainPercent}% {hero.targetConcept} Confidence
             </span>

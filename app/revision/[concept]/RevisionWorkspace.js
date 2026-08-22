@@ -108,13 +108,13 @@ export default function RevisionWorkspace({ concept, mastery, coreIdea, microPro
 
       {historyList.length > 0 && (
         <div className={DARK_CARD_PADDED}>
-          <h2 className="text-sm font-semibold text-neutral-300">Revision History</h2>
-          <ol className="mt-2 space-y-1 text-sm text-neutral-400">
+          <h2 className="text-sm font-semibold text-slate-300">Revision History</h2>
+          <ol className="mt-2 space-y-1 text-sm text-slate-400">
             {historyList.map((h, i) => (
               <li key={h.id}>
-                Review {i + 1} → <span className="text-neutral-200">{h.score}/10</span>
+                Review {i + 1} → <span className="text-slate-200">{h.score}/10</span>
                 {h.intervalDaysAfterReview != null ? (
-                  <span className="text-neutral-500"> → next in {h.intervalDaysAfterReview} day{h.intervalDaysAfterReview === 1 ? "" : "s"}</span>
+                  <span className="text-slate-500"> → next in {h.intervalDaysAfterReview} day{h.intervalDaysAfterReview === 1 ? "" : "s"}</span>
                 ) : (
                   ""
                 )}

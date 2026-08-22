@@ -6,7 +6,7 @@ export default function RootCauseCard({ rootCause }) {
   return (
     <div className="rounded-lg border border-rose-400/20 bg-rose-500/[0.07] px-3.5 py-3">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-rose-300">Root Cause</p>
-      <p className="mt-1 text-[15px] font-medium leading-snug text-neutral-100 whitespace-pre-wrap">{rootCause}</p>
+      <p className="mt-1 text-[15px] font-medium leading-snug text-slate-100 whitespace-pre-wrap">{rootCause}</p>
     </div>
   );
 }

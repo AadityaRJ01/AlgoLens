@@ -11,7 +11,7 @@ export default function RevisionHistory({ history }) {
   return (
     <div className={DARK_CARD_PADDED}>
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-sm font-semibold text-neutral-300">Recent Revision Sessions</h2>
+        <h2 className="text-sm font-semibold text-slate-300">Recent Revision Sessions</h2>
         <Link href="/activity" className="text-xs font-medium text-indigo-400 hover:text-indigo-300">
           View all →
         </Link>
@@ -19,8 +19,8 @@ export default function RevisionHistory({ history }) {
       <ul className="mt-2.5 space-y-2">
         {history.map((h) => (
           <li key={h.id} className="flex items-center justify-between gap-3 text-sm">
-            <span className="truncate text-neutral-300">{h.concept}</span>
-            <span className="shrink-0 text-xs text-neutral-500">
+            <span className="truncate text-slate-300">{h.concept}</span>
+            <span className="shrink-0 text-xs text-slate-500">
               <span className={h.understanding === "weak" ? "text-amber-400" : "text-emerald-400"}>
                 {h.understanding === "weak" ? "Needs another review" : "Completed"}
               </span>

@@ -11,7 +11,7 @@ export default function MicroProofStep({ question, answer, onAnswerChange, onSub
   return (
     <div className={`${DARK_CARD_PADDED} ring-1 ring-inset ring-purple-400/10`}>
       <p className="text-xs font-semibold uppercase tracking-wide text-purple-400/90">Prove Your Understanding</p>
-      <p className="mt-1.5 text-sm italic leading-snug text-neutral-300">&ldquo;{question}&rdquo;</p>
+      <p className="mt-1.5 text-sm italic leading-snug text-slate-300">&ldquo;{question}&rdquo;</p>
 
       {!answered && (
         <>
@@ -19,7 +19,7 @@ export default function MicroProofStep({ question, answer, onAnswerChange, onSub
             value={answer}
             onChange={(e) => onAnswerChange(e.target.value)}
             placeholder="Answer in a few sentences..."
-            className="mt-3 h-28 w-full resize-y rounded-lg border border-white/10 bg-white/[0.03] p-3 text-sm text-neutral-200 placeholder:text-neutral-600 outline-none focus:border-indigo-400/40"
+            className="mt-3 h-28 w-full resize-y rounded-lg border border-white/10 bg-white/[0.03] p-3 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-indigo-400/40"
           />
 
           {error && <p className="mt-1.5 text-sm text-rose-400">{error}</p>}

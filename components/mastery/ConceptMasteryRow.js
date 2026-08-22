@@ -11,7 +11,7 @@ const STATUS_LABEL = {
   WEAK: { text: "Needs Attention", tone: "text-amber-400" },
   DEVELOPING: { text: "Improving", tone: "text-blue-400" },
   STRONG: { text: "Strong", tone: "text-emerald-400" },
-  NEUTRAL: { text: "Developing", tone: "text-neutral-500" },
+  NEUTRAL: { text: "Developing", tone: "text-slate-500" },
 };
 
 // A single concept row — click to open its MasteryDetail (see
@@ -23,15 +23,15 @@ export default function ConceptMasteryRow({ concept, masteryScore, status, trend
   return (
     <Link
       href={`/mastery?concept=${encodeURIComponent(concept)}`}
-      className={`block rounded-lg border px-3 py-2.5 transition-colors ${
+      className={`block rounded-lg border px-3 py-2.5 transition-all ${
         isSelected
           ? "border-indigo-400/30 bg-indigo-500/[0.06]"
-          : "border-transparent hover:bg-white/[0.04]"
+          : "border-transparent hover:border-violet-500/30 hover:bg-[#151D2E] hover:shadow-md hover:shadow-violet-500/5"
       }`}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-neutral-100">{concept}</p>
+          <p className="truncate text-sm font-medium text-slate-100">{concept}</p>
           <p className={`text-xs ${statusLabel.tone}`}>
             {masteryScore}% · {statusLabel.text}
           </p>

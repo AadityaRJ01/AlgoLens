@@ -60,11 +60,11 @@ function NavLink({ href, label, icon, pathname, onNavigate }) {
       aria-current={active ? "page" : undefined}
       className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
         active
-          ? "bg-indigo-500/10 text-neutral-50 ring-1 ring-inset ring-indigo-400/25"
-          : "text-neutral-400 hover:bg-white/5 hover:text-neutral-100"
+          ? "bg-indigo-500/10 text-slate-50 ring-1 ring-inset ring-indigo-400/25"
+          : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
       }`}
     >
-      <Icon className={active ? "text-indigo-400" : "text-neutral-500 group-hover:text-neutral-300"} />
+      <Icon className={active ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"} />
       <span className="truncate">{label}</span>
     </Link>
   );
@@ -80,15 +80,15 @@ function NavBody({ pathname, onNavigate }) {
         ))}
       </div>
 
-      <div className="my-4 border-t border-white/10" />
-      <p className="px-3 pb-2 text-[11px] font-semibold tracking-wider text-neutral-600">LEARNING</p>
+      <div className="my-4 border-t border-slate-800" />
+      <p className="px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-600">LEARNING</p>
       <div className="space-y-1">
         {LEARNING_LINKS.map((link) => (
           <NavLink key={link.href} {...link} pathname={pathname} onNavigate={onNavigate} />
         ))}
       </div>
 
-      <div className="my-4 border-t border-white/10" />
+      <div className="my-4 border-t border-slate-800" />
       <div className="space-y-1">
         {BOTTOM_LINKS.map((link) => (
           <NavLink key={link.href} {...link} pathname={pathname} onNavigate={onNavigate} />
@@ -118,8 +118,8 @@ export default function SidebarNav({ profileSlot }) {
   return (
     <>
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-[#05060a]/95 px-4 py-3 backdrop-blur md:hidden">
-        <Link href="/dashboard" className="text-lg font-bold tracking-tight text-neutral-50">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-800 bg-[#0D1220]/95 px-4 py-3 backdrop-blur md:hidden">
+        <Link href="/dashboard" className="text-lg font-bold tracking-tight text-slate-50">
           AlgoLens
         </Link>
         <div className="flex items-center gap-3">
@@ -129,7 +129,7 @@ export default function SidebarNav({ profileSlot }) {
             onClick={() => setIsMobileOpen((v) => !v)}
             aria-label={isMobileOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isMobileOpen}
-            className="rounded-lg p-1.5 text-neutral-300 hover:bg-white/5 hover:text-neutral-100"
+            className="rounded-lg p-1.5 text-slate-300 hover:bg-white/5 hover:text-slate-100"
           >
             {isMobileOpen ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
@@ -145,22 +145,22 @@ export default function SidebarNav({ profileSlot }) {
       </header>
 
       {isMobileOpen && (
-        <div className="flex max-h-[70vh] flex-col border-b border-white/10 bg-[#05060a] md:hidden">
+        <div className="flex max-h-[70vh] flex-col border-b border-slate-800 bg-[#0D1220] md:hidden">
           <NavBody pathname={pathname} onNavigate={() => setIsMobileOpen(false)} />
         </div>
       )}
 
       {/* Desktop rail */}
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-white/10 bg-[#05060a] md:flex">
-        <div className="border-b border-white/10 px-5 py-5">
-          <Link href="/dashboard" className="text-xl font-bold tracking-tight text-neutral-50">
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-slate-800 bg-[#0D1220] md:flex">
+        <div className="border-b border-slate-800 px-5 py-5">
+          <Link href="/dashboard" className="text-xl font-bold tracking-tight text-slate-50">
             AlgoLens
           </Link>
         </div>
 
         <NavBody pathname={pathname} />
 
-        <div className="border-t border-white/10 px-4 py-4">{profileSlot}</div>
+        <div className="border-t border-slate-800 px-4 py-4">{profileSlot}</div>
       </aside>
     </>
   );

@@ -9,11 +9,11 @@ export default function PageHeader({ greeting, name, subtitle, streakDays }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">
+        <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">
           {greeting}
           {name ? `, ${name}` : ""} <span aria-hidden="true">👋</span>
         </h1>
-        <p className="mt-1 text-sm text-neutral-400">{subtitle}</p>
+        <p className="mt-1 text-sm text-slate-400">{subtitle}</p>
       </div>
 
       <div className="flex items-center gap-3">

@@ -46,12 +46,12 @@ export default async function RecommendationsPage() {
     masteryCount > 0 && !catalogNotInitialized ? await getRecommendationEngineData(userId, recommendations) : null;
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-5xl")}>
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Recommendations</h1>
-            <p className="mt-1 text-sm text-neutral-400">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Recommendations</h1>
+            <p className="mt-1 text-sm text-slate-400">
               Precision-engineered problem sets generated from your recent learning signals.
             </p>
           </div>
@@ -64,7 +64,7 @@ export default async function RecommendationsPage() {
 
         {masteryCount > 0 && catalogNotInitialized && (
           <div className={`${DARK_CARD_PADDED} space-y-3`}>
-            <p className="text-neutral-400">
+            <p className="text-slate-400">
               The global LeetCode problem catalog hasn&apos;t been initialized yet, so we have no
               pool of problems to recommend from. Initialize it once and recommendations will
               appear.

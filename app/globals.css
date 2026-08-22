@@ -25,105 +25,25 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Smooth in-page scrolling for landing-page anchor links (e.g. "See How It
-   Works"). Disabled under prefers-reduced-motion below. */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Landing page entrance animations (Hero copy + product preview). Subtle,
-   one-shot fade/slide on initial paint — no JS/observer needed since the
-   hero is always above the fold. */
-@keyframes landing-fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.landing-animate-in {
-  animation: landing-fade-in-up 0.7s ease-out both;
-}
-
-.landing-animate-in-delay-1 {
-  animation-delay: 0.12s;
-}
-
-.landing-animate-in-delay-2 {
-  animation-delay: 0.24s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  .landing-animate-in,
-  .landing-animate-in-delay-1,
-  .landing-animate-in-delay-2 {
-    animation: none;
-  }
-}
-
-/* Slow ambient glow "drift" used behind the feature showcase section —
-   a subtle position/scale/opacity breathing effect, not a flashy animation. */
-@keyframes landing-glow-drift {
-  0% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateX(-46%) translateY(1.5%) scale(1.06);
-    opacity: 0.85;
-  }
-  100% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    opacity: 0.6;
-  }
-}
-
-.landing-glow-drift {
-  animation: landing-glow-drift 14s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-glow-drift {
-    animation: none;
-    transform: translateX(-50%);
-  }
-}
-
-/* Subtle "blueprint" dotted grid used behind the Learning Loop system
-   diagram panel, to make that section read as visually distinct. Static
-   decoration only — no animation. */
-.landing-schematic-grid {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Very subtle idle "float" used on the Hero product preview and the large
-   product-demo browser window, so those panels read as alive rather than
-   static screenshots. */
-@keyframes landing-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.landing-float {
-  animation: landing-float 6s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-float {
-    animation: none;
-  }
+/* AlgoLens dark app palette — deep blue-black + indigo + violet, used
+   across the authenticated app (dashboard, analyze, mastery, revision,
+   recommendations, problems, micro-proofs, doubt solver, sidebar). This is
+   reference documentation for the values already applied directly via
+   Tailwind classes in lib/theme.js (DARK_* tokens) and the dark page/
+   component files — not consumed via var() everywhere, since most surfaces
+   use the equivalent named Tailwind utility (slate-50/400/800,
+   violet-500, indigo-500, blue-500) for readability. Kept here as the one
+   place that documents the full system, including the three surface tones
+   that don't correspond to a stock Tailwind shade. */
+:root {
+  --algolens-bg: #080b14; /* main background */
+  --algolens-nav-bg: #0d1220; /* navbar/sidebar */
+  --algolens-card-bg: #111827; /* cards/panels */
+  --algolens-card-hover-bg: #151d2e; /* card hover */
+  --algolens-border: #1e293b; /* borders (= slate-800) */
+  --algolens-text-primary: #f8fafc; /* primary text (= slate-50) */
+  --algolens-text-secondary: #94a3b8; /* secondary text (= slate-400) */
+  --algolens-accent-primary: #8b5cf6; /* primary accent (= violet-500) */
+  --algolens-accent-secondary: #6366f1; /* secondary accent (= indigo-500) */
+  --algolens-glow-blue: #3b82f6; /* blue glow (= blue-500) */
 }

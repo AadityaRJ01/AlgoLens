@@ -9,7 +9,7 @@ import { TIER_META } from "./statusTier";
 export default function MasteryTrend({ masteryScore, trend, tier }) {
   return (
     <span className="inline-flex items-baseline gap-1.5">
-      <span className="font-semibold text-neutral-100">{masteryScore}%</span>
+      <span className="font-semibold text-slate-100">{masteryScore}%</span>
       {trend && (
         <span className={`text-xs font-medium ${trend.direction === "up" ? TIER_META[tier].text : "text-rose-400"}`}>
           {trend.direction === "up" ? "↑" : "↓"} {Math.round(trend.deltaPoints)}%

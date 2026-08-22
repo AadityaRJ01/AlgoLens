@@ -28,7 +28,7 @@ export default function BookmarkableProblemList({ problems }) {
         className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
           showBookmarkedOnly
             ? "border-amber-400/40 bg-amber-500/10 text-amber-300"
-            : "border-white/10 text-neutral-400 hover:text-neutral-100"
+            : "border-slate-800 text-slate-400 hover:text-slate-100"
         }`}
       >
         🔖 Bookmarked{isHydrated && bookmarkedIds.size > 0 ? ` (${bookmarkedIds.size})` : ""}

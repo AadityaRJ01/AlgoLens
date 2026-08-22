@@ -35,7 +35,7 @@ export default function ProblemFilters({ current }) {
             className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               current.status === opt.id
                 ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300"
-                : "border-white/10 text-neutral-400 hover:text-neutral-100"
+                : "border-slate-800 text-slate-400 hover:text-slate-100"
             }`}
           >
             {opt.label}
@@ -47,7 +47,7 @@ export default function ProblemFilters({ current }) {
         <Link
           href={buildHref(current, { difficulty: null })}
           className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-            !current.difficulty ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300" : "border-white/10 text-neutral-400 hover:text-neutral-100"
+            !current.difficulty ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300" : "border-slate-800 text-slate-400 hover:text-slate-100"
           }`}
         >
           All
@@ -59,7 +59,7 @@ export default function ProblemFilters({ current }) {
             className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               current.difficulty === d
                 ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300"
-                : "border-white/10 text-neutral-400 hover:text-neutral-100"
+                : "border-slate-800 text-slate-400 hover:text-slate-100"
             }`}
           >
             {d}
@@ -71,7 +71,7 @@ export default function ProblemFilters({ current }) {
         <Link
           href={buildHref(current, { topic: null })}
           className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-            !current.topic ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300" : "border-white/10 text-neutral-400 hover:text-neutral-100"
+            !current.topic ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300" : "border-slate-800 text-slate-400 hover:text-slate-100"
           }`}
         >
           All Topics
@@ -83,7 +83,7 @@ export default function ProblemFilters({ current }) {
             className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               current.topic === t
                 ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300"
-                : "border-white/10 text-neutral-400 hover:text-neutral-100"
+                : "border-slate-800 text-slate-400 hover:text-slate-100"
             }`}
           >
             {t}

@@ -24,11 +24,11 @@ export default async function MasteryPage({ searchParams }) {
   const { masteryList, summary } = await getMasteryOverview(userId);
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-6xl")}>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">Mastery</h1>
-          <p className="mt-1 text-sm text-neutral-400">Track what you understand — and what needs more work.</p>
+          <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Mastery</h1>
+          <p className="mt-1 text-sm text-slate-400">Track what you understand — and what needs more work.</p>
         </div>
 
         {masteryList.length === 0 ? (

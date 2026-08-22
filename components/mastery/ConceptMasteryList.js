@@ -48,14 +48,14 @@ export default function ConceptMasteryList({ masteryList, selectedConcept }) {
   return (
     <div className={DARK_CARD_PADDED}>
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h2 className="text-base font-semibold text-neutral-50">Your Concepts</h2>
+        <h2 className="text-base font-semibold text-slate-50">Your Concepts</h2>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-neutral-300 outline-none focus:border-indigo-400/40"
+          className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-300 outline-none focus:border-indigo-400/40"
         >
           {SORTS.map((s) => (
-            <option key={s.id} value={s.id} className="bg-neutral-900">
+            <option key={s.id} value={s.id} className="bg-slate-900">
               Sort: {s.label}
             </option>
           ))}
@@ -71,7 +71,7 @@ export default function ConceptMasteryList({ masteryList, selectedConcept }) {
             className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
               filter === f.id
                 ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-300"
-                : "border-white/10 text-neutral-400 hover:text-neutral-100"
+                : "border-slate-800 text-slate-400 hover:text-slate-100"
             }`}
           >
             {f.label}
@@ -80,7 +80,7 @@ export default function ConceptMasteryList({ masteryList, selectedConcept }) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="mt-4 text-sm text-neutral-500">No concepts match this filter.</p>
+        <p className="mt-4 text-sm text-slate-500">No concepts match this filter.</p>
       ) : (
         <div className="mt-3 space-y-1.5">
           {filtered.map((m) => (

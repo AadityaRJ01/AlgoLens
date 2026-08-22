@@ -85,9 +85,9 @@ export default async function RevisionConceptPage({ params }) {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-3xl")}>
-        <Link href="/revision" className="text-sm text-neutral-500 hover:text-neutral-300">
+        <Link href="/revision" className="text-sm text-slate-500 hover:text-slate-300">
           ← Back to Revision
         </Link>
 

@@ -45,8 +45,8 @@ function SignalRow({ event }) {
         <div className="flex items-center gap-2">
           <span className={`text-[10px] font-semibold tracking-wide ${tone.text}`}>{tag}</span>
         </div>
-        <p className="truncate text-sm text-neutral-200">{event.label}</p>
-        <p className="mt-0.5 text-xs text-neutral-500">
+        <p className="truncate text-sm text-slate-200">{event.label}</p>
+        <p className="mt-0.5 text-xs text-slate-500">
           {event.detail}
           {event.date && <> · {new Date(event.date).toLocaleDateString()}</>}
         </p>
@@ -63,7 +63,7 @@ export default function LearningSignalsList({ events, title = "Recent Learning S
   return (
     <section className={DARK_CARD_PADDED}>
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-base font-semibold text-neutral-50">{title}</h2>
+        <h2 className="text-base font-semibold text-slate-50">{title}</h2>
         {!hideViewAll && (
           <Link href="/activity" className="text-sm font-medium text-indigo-400 hover:text-indigo-300">
             View all →

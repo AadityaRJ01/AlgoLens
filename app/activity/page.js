@@ -19,16 +19,16 @@ export default async function ActivityPage() {
   const events = await getActivityHistory(userId, { limit: 50 });
 
   return (
-    <div className="min-h-screen bg-[#05060a] text-neutral-50">
+    <div className="min-h-screen bg-[#0B0F17] text-slate-50">
       <div className={pageClass("max-w-3xl")}>
         <div>
-          <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-300">
+          <Link href="/dashboard" className="text-sm text-slate-500 hover:text-slate-300">
             ← Back to dashboard
           </Link>
-          <h1 className="mt-2 text-xl font-semibold tracking-tight text-neutral-50 sm:text-2xl">
+          <h1 className="mt-2 text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">
             Learning Activity History
           </h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <p className="mt-1 text-sm text-slate-400">
             Every solve, failure, Micro-Proof, revision, and mastery update — in order.
           </p>
         </div>

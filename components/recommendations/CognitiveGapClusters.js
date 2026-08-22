@@ -31,7 +31,7 @@ export default function CognitiveGapClusters({ clusters }) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h2 className="text-base font-semibold text-neutral-50">Cognitive Gap Clusters</h2>
+        <h2 className="text-base font-semibold text-slate-50">Cognitive Gap Clusters</h2>
         <div className="flex gap-1.5 overflow-x-auto pb-1">
           {FILTERS.map((f) => (
             <button
@@ -41,7 +41,7 @@ export default function CognitiveGapClusters({ clusters }) {
               className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                 filter === f.id
                   ? "border-blue-400/40 bg-blue-500/10 text-blue-300"
-                  : "border-white/10 text-neutral-400 hover:text-neutral-100"
+                  : "border-slate-800 text-slate-400 hover:text-slate-100"
               }`}
             >
               {f.label}
