@@ -5,12 +5,21 @@ import { fetchProblemDescription } from "@/lib/leetcode";
 import { analyzeFailure, GroqServiceError } from "@/lib/groq";
 import { MAX_PASTE_CHARS } from "@/lib/constants";
 import { recalculateConceptMastery } from "@/lib/mastery";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 export async function POST(req) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("failures_analyze", userId, RATE_LIMITS.GROQ_STANDARD);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const body = await req.json();

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrGenerateRecommendations, CatalogNotInitializedError } from "@/lib/recommendations";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 function serialize(rec) {
   return {
@@ -28,6 +29,14 @@ export async function POST() {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("recommendations_generate", userId, RATE_LIMITS.GROQ_STANDARD);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const recommendations = await getOrGenerateRecommendations(userId);

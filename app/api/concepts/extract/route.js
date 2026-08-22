@@ -5,6 +5,7 @@ import { fetchProblemDescription } from "@/lib/leetcode";
 import { extractConceptAndMicroProof, GroqServiceError } from "@/lib/groq";
 import { ACCEPTED_VERDICT, MAX_PASTE_CHARS } from "@/lib/constants";
 import { recalculateConceptMastery } from "@/lib/mastery";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 function serializeConcept(concept) {
   return {
@@ -47,6 +48,14 @@ export async function POST(req) {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("concepts_extract", userId, RATE_LIMITS.GROQ_STANDARD);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const body = await req.json();

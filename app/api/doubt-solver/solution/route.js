@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { generateFullSolution, GroqServiceError } from "@/lib/groq";
 import { getDoubtPersonalizationContext } from "@/lib/doubtSolverContext";
 import { MAX_PASTE_CHARS, MAX_DOUBT_CHARS } from "@/lib/constants";
+import { checkRouteRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 const MAX_PREVIOUS_HINTS = 4;
 
@@ -16,6 +17,14 @@ export async function POST(req) {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const limited = checkRouteRateLimit("doubt_solver_solution", userId, RATE_LIMITS.DOUBT_SOLVER_SOLUTION);
+    if (limited) {
+      return NextResponse.json(limited.body, {
+        status: limited.status,
+        headers: { "Retry-After": String(limited.retryAfterSeconds) },
+      });
     }
 
     const body = await req.json();
